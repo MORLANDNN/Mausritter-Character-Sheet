@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mausritter - Главное меню</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div id="app-container" style="max-width: 600px; display: block; margin-top: 50px;">
+        <h1 style="text-align: center; margin-bottom: 30px; font-size: 3rem; font-family: 'Hangyaku', sans-serif;">Mausritter</h1>
+        <!-- Кнопки управления -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+            <button id="btn-new" class="btn-primary" style="margin: 0;">Пустой лист</button>
+            <button id="btn-generate" class="btn-primary" style="margin: 0;">Сгенерировать</button>
+            <label class="btn-primary" style="margin: 0; text-align: center; cursor: pointer;">
+                Загрузить
+                <input type="file" id="file-import" accept=".json" style="display: none;">
+            </label>
+            <button id="btn-export" class="btn-primary" style="margin: 0;">Сохранить</button>
+        </div>
+        <h2 style="border-bottom: 3px solid #999; padding-bottom: 5px; margin-bottom: 15px; font-family: 'Hangyaku', sans-serif; font-size: 2.5rem;">Сохраненные мыши</h2>
+        <!-- Список персонажей -->
+        <div id="char-list"></div>
+    </div>
+    <!-- Скрипты меню -->
+    <script defer src="js/storage.js"></script>
+    <script defer src="js/menu.js"></script>
+</body>
+</html>

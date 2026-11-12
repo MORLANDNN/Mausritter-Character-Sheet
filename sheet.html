@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mausritter Лист Персонажа</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- ЛЕВАЯ КОЛОНКА -->
+        <section class="left-col">
+            <div class="header-group">
+				<div class="inventory-header">
+					<input type="text" id="char-name" placeholder="Имя мыши" class="text-large">
+					<button id="btn-menu" class="btn-add" style="width: auto; border-radius: 6px; padding: 0 15px; font-size: 1.1rem; height: 35px;">Меню</button>
+				</div>
+				<div class="level-xp">
+						<label>Уровень: <input type="number" id="char-level" value="0" class="input-short"></label>
+						<label>XP: <input type="number" id="char-xp" value="0" class="input-pips"></label>
+						<label>Выдержка: <input type="number" id="char-grit" value="0" class="input-short"></label>
+				</div>
+            </div>
+            <!-- Характеристики -->
+            <div class="stats-grid">
+			<div class="stat-box">
+                    <label>ЗАЩ</label>
+                    <div class="stat-inputs">
+                        <input type="number" id="hp-current" value="0" class="input-stat"> /
+                        <input type="number" id="hp-max" value="0" class="input-stat">
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <label>СИЛ</label>
+                    <div class="stat-inputs">
+                        <input type="number" id="str-current" value="0" class="input-stat"> /
+                        <input type="number" id="str-max" value="0" class="input-stat">
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <label>ЛОВ</label>
+                    <div class="stat-inputs">
+                        <input type="number" id="dex-current" value="0" class="input-stat"> /
+                        <input type="number" id="dex-max" value="0" class="input-stat">
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <label>ВОЛ</label>
+                    <div class="stat-inputs">
+                        <input type="number" id="wil-current" value="0" class="input-stat"> /
+                        <input type="number" id="wil-max" value="0" class="input-stat">
+                    </div>
+                </div>
+                
+            </div>
+            <!-- Текстовые описания -->
+            <div class="details-group">
+				<label>Происхождение:</label> 
+				<div class="native-select-wrapper">
+                    <select id="char-background" class="scrollable-native-select">
+                        <option>Подопытный</option>
+                        <option>Повар</option>
+                        <option>Житель клетки</option>
+                        <option>Знахарь</option>
+                        <option>Кожевник</option>
+						<option>Уличный бандит</option>
+						<option>Нищий священник</option>
+						<option>Пчелопас</option>
+						<option>Пивовар</option>
+						<option>Рыбак</option>
+						<option>Кузнец</option>
+						<option>Проволочник</option>
+						<option>Резчик по дереву</option>
+						<option>Сектант</option>
+						<option>Оловодобытчик</option>
+						<option>Мусорщик</option>
+						<option>Стенолаз</option>
+						<option>Торговец</option>
+						<option>Матрос с плота</option>
+						<option>Погонщик червей</option>
+						<option>Воробьиный наездник</option>
+						<option>Проводник по канализации</option>
+						<option>Тюремный стражник</option>
+						<option>Фермер-грибник</option>
+						<option>Строитель плотины</option>
+						<option>Картограф</option>
+						<option>Грабитель ловушек</option>
+						<option>Бродяга</option>
+						<option>Фермер-зерновод</option>
+						<option>Гонец</option>
+						<option>Трубадур</option>
+						<option>Азартный игрок</option>
+						<option>Добытчик древесного сока</option>
+						<option>Пчеловод</option>
+						<option>Библиотекарь</option>
+						<option>Обнищавший дворянин</option>
+                    </select>
+				</div>
+				<label>Знак рождения:</label>
+				<div class="native-select-wrapper">
+                    <select id="char-birthsign" class="scrollable-native-select">
+                        <option>Звезда - храбрый/безрассудный</option>
+                        <option>Колесо - Трудолюбивый/приземлённый</option>
+                        <option>Жёлудь - Любознательный/упрямый</option>
+                        <option>Буря - Благородный/гневливый</option>
+                        <option>Луна - Мудрый/таинственный</option>
+						<option>Мать - Заботливый/тревожный</option>
+                    </select>
+				</div>
+                <label>Внешность</label>
+                <textarea id="char-appearance" rows="3" class="input-area"></textarea>
+				<label>Игнорируемые состояния</label>
+				<textarea id="char-ignored-cond" rows="3" class="input-area"></textarea>
+            </div>
+        </section>
+        <!-- ПРАВАЯ КОЛОНКА -->
+        <section class="right-col">
+            <div class="inventory-section">
+                <div class="inventory-header">
+                    <h2>Снаряжение</h2>
+                    <button id="btn-add-item" class="btn-add">+</button>
+                </div>
+                <!-- Место для сообщения о перегрузе -->
+                <div id="overload-warning" class="overload-text hidden"></div>
+                <!-- Таблицы инвентаря (пустые контейнеры для JS) -->
+                <div class="inventory-category">
+                    <div class="category-head">В лапах <span id="paws-count" class="slot-count">0/2</span></div>
+                    <div id="paws-list" class="inventory-list"></div>
+                </div>
+                <div class="inventory-category">
+				<div class="category-head">Надетое <span id="body-count" class="slot-count">0/2</span></div>
+                    <div id="body-list" class="inventory-list"></div>
+                </div>
+                <div class="inventory-category">
+                    <div class="category-head">В мешке <span id="pack-count" class="slot-count">0/6</span></div>
+                    <div id="pack-list" class="inventory-list"></div>
+                </div>
+            </div>
+            <div class="extra-inventory-group">
+			<div class="pips-group">
+                <label>Зернышки: <input type="number" id="char-pips" value="0" class="input-line input-pips"></label>
+            </div>
+                <label>Предметы в банке</label>
+				<textarea id="char-bank" rows="3" class="input-area"></textarea>
+            </div>
+        </section>
+        <!-- НИЖНИЙ БЛОК -->
+        <section class="bottom-col">
+            <label>Заметки</label>
+            <textarea id="char-notes" rows="6" class="input-area"></textarea>
+        </section>
+    </div>
+	<!-- МОДАЛЬНЫЕ ОКНА -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <!-- 1. Каталог предметов -->
+        <div id="modal-catalog" class="modal-content hidden">
+            <div class="modal-header">
+                <h3>Добавить предмет</h3>
+                <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
+            </div>
+            <div class="modal-body" id="catalog-list"></div>
+            <div class="modal-footer">
+                <button onclick="UI_Modals.openCreate()" class="btn-primary">Создать свое...</button>
+            </div>
+        </div>
+        <!-- 2. Создание своего предмета -->
+        <div id="modal-create" class="modal-content hidden">
+            <div class="modal-header">
+                <h3>Новый предмет</h3>
+                <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
+            </div>
+            <div class="modal-body form-group">
+                <label>Название: <input type="text" id="custom-name" class="input-line"></label>
+                <label>Тип: 
+                    <select id="custom-type" class="input-line">
+                        <option value="item">Предмет</option>
+                        <option value="weapon">Оружие</option>
+                        <option value="armor">Броня</option>
+                        <option value="spell">Заклинание</option>
+                        <option value="condition">Состояние</option>
+                    </select>
+                </label>
+                <label>Описание / Урон: <input type="text" id="custom-detail" class="input-line"></label>
+                <label>Прочность: <input type="number" id="custom-uses" value="0" min="0" max="3" class="input-short"></label>
+                <div id="custom-weapon-block" class="hidden">
+                    <label>Категория оружия:
+                        <select id="custom-weapon-size" class="input-line">
+                            <option value="light">Легкое</option>
+                            <option value="medium">Среднее</option>
+                            <option value="heavy">Тяжелое</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="custom-slots-block">
+                    <label>Количество ячеек: <input type="number" id="custom-slots" value="1" min="1" max="6" class="input-short"></label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="UI_Modals.saveCustomItem()" class="btn-primary">Создать и добавить</button>
+            </div>
+        </div>
+        <!-- 3. Действия с предметом (Попап строки) -->
+        <div id="modal-actions" class="modal-content hidden">
+            <div class="modal-header">
+                <h3 id="action-item-name">Предмет</h3>
+                <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
+            </div>
+            <div class="modal-body" id="action-buttons"></div>
+        </div>
+        <!-- 4. Выбор куда положить предмет -->
+        <div id="modal-location" class="modal-content hidden">
+            <div class="modal-header">
+                <h3 id="location-item-name">Куда положить?</h3>
+                <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
+            </div>
+            <div class="modal-body" id="location-buttons"></div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script defer src="js/data.js"></script>
+    <script defer src="js/state.js"></script>
+    <script defer src="js/storage.js"></script>
+    <script defer src="js/inventory.js"></script>
+    <script defer src="js/ui.js"></script>
+	
+</body>
+</html>
+
