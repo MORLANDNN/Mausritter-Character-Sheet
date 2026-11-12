@@ -1,0 +1,359 @@
+/* js/layout.css — Сетка и базовое оформление */
+/* --- ПОДКЛЮЧЕНИЕ ШРИФТОВ --- */
+@font-face {
+    font-family: 'Hangyaku';
+    src: url('../fonts/Hangyaku-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Fira Sans Condensed';
+    src: url('../fonts/FiraSansCondensed-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 1. Основной шрифт для всего интерфейса и полей ввода */
+html, body, input, textarea, select, button {
+    font-family: 'Fira Sans Condensed', sans-serif;
+}
+
+/* 2. Акцентный шрифт для заголовков и имени мыши */
+label, h1, h2, h3, #char-name, .category-head {
+    font-family: 'Hangyaku', sans-serif;
+    letter-spacing: 1px;
+	
+}
+#app-container{
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color:#fffcf5; /* Светлый бумажный фон */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    /* CSS Grid для ПК-версии */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+/* Нижний блок растягивается на обе колонки */
+.bottom-col {
+    grid-column: 1 / -1; 
+}
+/* Оформление полей ввода (стилизация под печатный лист) */
+input, textarea {
+    background: transparent;
+    font-size: 1.8rem;
+}
+.input-line {
+    width: 100%;
+    border-bottom: 1px solid#999;
+    padding: 4px 4px 4px 4px;
+    margin-bottom: 15px;
+}
+.input-line:focus {
+    border-bottom-color:#999;
+}
+.input-short {
+    width: 50px;
+    text-align: center;
+    border-bottom: 1px solid#999;
+
+}
+.level-xp {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.level-xp label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+}
+.input-pips {
+    width: 100px;
+    display: inline-block;
+	border-bottom: 1px solid#999;
+}
+.text-large {
+	width: 100%;
+    font-size: 2.5rem;
+}
+.input-area {
+    width: 100%;
+    border: 1px solid#999;
+    padding: 8px;
+    resize: vertical;
+    background: #fff;
+	font-size: 1.2rem;
+}
+label {
+    display: block;
+    font-size: 2.2rem;
+	margin-top: 5px;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+}
+
+/* Сетка для СИЛ, ЛОВ, ВОЛ, ЗАЩ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    margin: 20px 0;
+}
+.stat-box {
+    text-align: center;
+    background:#f0ebe1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid#999;
+}
+.stat-box label {
+    margin-bottom: 8px;
+}
+.input-stat {
+    width: 50px;
+    text-align: center;
+    font-size: 1.8rem;
+    background:#fff;
+    border: 1px solid#999;
+    border-radius: 4px;
+}
+/* Заголовки инвентаря и кнопка + */
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid#999;
+	font-weight: normal;
+}
+.inventory-header h2 {
+	font-size: 2.5rem;
+	font-weight: normal;
+	margin: 0;
+}
+.btn-add {
+    background:#1a1a1a;
+    color:#fff;
+    font-size: 2.2rem;
+    line-height: 1;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-add:hover {
+    background:#999;
+}
+.category-head {
+    font-size: 2.2rem;
+    margin: 15px 0 10px 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted#ccc;
+    padding-bottom: 4px;
+}
+.slot-count {
+    color:#999;
+    font-size: 1.8rem;
+}
+.inventory-list {
+    min-height: 40px; /* Чтобы пустая таблица не схлопывалась */
+}
+/* Текст перегруза */
+.overload-text {
+    font-size: 1.06rem;
+    font-weight: bold;
+    color: #800000;
+    margin-bottom: 10px;
+}
+.hidden {
+    display: none;
+}
+.native-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.scrollable-native-select {
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 6px;
+    background:#fff;
+    border: 1px solid #999;
+    border-radius: 4px;
+}
+
+/* При открытии переходит в абсолютный слой */
+.scrollable-native-select:focus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* css/components.css — Модальные окна */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-overlay.hidden { display: none; }
+.modal-content.hidden { display: none; }
+.modal-content {
+    background:#fffcf5;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid#999;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Чтобы окно не вылезало за экран */
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #999;
+}
+
+.modal-header h3{
+    font-size: 2.5rem;
+    margin: 0;
+    line-height: 1.2;
+	font-weight: normal;
+}
+
+.btn-close {
+    background: none; border: none; font-size: 2.2rem; line-height: 1;
+    cursor: pointer; color: #999;
+}
+.modal-body {
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+.btn-primary, .btn-action {
+    width: 100%; padding: 12px; margin-bottom: 8px;
+    background: #333; color: white; border: none; border-radius: 10px;
+    cursor: pointer; font-size: 1.3rem; text-transform: uppercase;
+	font-family: 'Fira Sans Condensed', sans-serif;
+}
+
+/* Увеличенный размер для select и его вариантов */
+select.input-line {
+    font-size: 1rem;
+    padding: 3px 10px;
+    height: auto;
+    border: 1px solid #999;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+select.input-line option {
+    font-size: 1rem;
+    padding: 4px;
+}
+.btn-primary:hover, .btn-action:hover { background:#555; }
+.btn-action.delete { background:#800000; }
+.btn-action.delete:hover { background:#a00000; }
+/* Стили каталога */
+.catalog-category {
+    font-family: 'Hangyaku', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    color: #1a1a1a;
+	cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    border-bottom: 1px solid #ccc;
+}
+.catalog-category::after {
+    content: "▸";
+    font-size: 1.2rem;
+}
+.catalog-category.open::after {
+    content: "▾";
+}
+.catalog-category-items.hidden {
+    display: none;
+}
+.catalog-item {
+    padding: 5px; border-bottom: 2px dotted #999; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+	font-size: 1.2rem;
+}
+.catalog-item:hover { background: rgba(0,0,0,0.05); }
+.catalog-item-size { font-size: 1rem; color: #888; }
+
+
+/* css/inventory.css — Оформление списков снаряжения */
+.inventory-item {
+    border: 1px solid#555;
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    background-color:#fdfbf7;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+.inventory-item:hover {
+    background-color:#fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.item-name {
+    font-size: 1.2rem;
+    color:#1a1a1a;
+}
+.item-detail {
+    font-size: 1rem;
+    color:#666;
+    line-height: 1.2;
+}
+/* Контейнер для кружочков прочности */
+.uses-container {
+    display: flex;
+    gap: 4px;
+}
+.use-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid#1a1a1a;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+.use-circle.filled {
+    background-color:#1a1a1a;
+}
+/* Пустая строка (штриховая обводка) */
+.empty-slot {
+    border: 2px dashed#999;
+    border-radius: 6px;
+    height: 44px; /* Примерная высота компактной строки */
+    margin-bottom: 8px;
+    background-color: rgba(0, 0, 0, 0.02);
+}
