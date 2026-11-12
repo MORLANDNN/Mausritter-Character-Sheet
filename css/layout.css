@@ -1,359 +1,611 @@
-/* js/layout.css — Сетка и базовое оформление */
-/* --- ПОДКЛЮЧЕНИЕ ШРИФТОВ --- */
+/* =========================================================
+   1. ШРИФТЫ И ПЕРЕМЕННЫЕ ДИЗАЙН-СИСТЕМЫ
+   ========================================================= */
 @font-face {
     font-family: 'Hangyaku';
     src: url('../fonts/Hangyaku-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
-
 @font-face {
     font-family: 'Fira Sans Condensed';
     src: url('../fonts/FiraSansCondensed-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
-
-/* 1. Основной шрифт для всего интерфейса и полей ввода */
-html, body, input, textarea, select, button {
-    font-family: 'Fira Sans Condensed', sans-serif;
+:root {
+    /* Палитра (строго 4 цвета) */
+    --c-bg:#fffcf5;      /* 1. Светлый пергамент */
+    --c-surface:#efebdc; /* 2. Бежевая подложка и мягкие линии */
+    --c-ink:#333333;     /* 3. Угольно-черный (текст, кнопки, контуры) */
+    --c-danger:#8b261d;  /* 4. Красный акцент (удаление, перегруз) */
+    /* Шрифты */
+    --f-heading: 'Hangyaku', sans-serif;
+    --f-body: 'Fira Sans Condensed', sans-serif;
+    /* Единая шкала размеров шрифта */
+    --fs-xl: 2.2rem;   /* Главные заголовки (h1, h2, имя мыши) */
+    --fs-lg: 1.5rem;   /* Подзаголовки (h3, категории, переключатель) */
+    --fs-md: 1.1rem;   /* Основной текст, подписи, инпуты, кнопки */
+    --fs-sm: 0.95rem;  /* Детали предметов, счетчики ячеек */
+    /* Единые рамки, скругления и тени */
+    --radius: 6px;
+    --border-subtle: 1px solid var(--c-surface);
+    --border-main: 1px solid var(--c-ink);
+    --border-bold: 2px solid var(--c-ink);
+    --shadow: 0 4px 12px rgba(34, 34, 34, 0.12);
 }
-
-/* 2. Акцентный шрифт для заголовков и имени мыши */
-label, h1, h2, h3, #char-name, .category-head {
-    font-family: 'Hangyaku', sans-serif;
-    letter-spacing: 1px;
-	
+/* =========================================================
+   2. БАЗОВЫЕ ЭЛЕМЕНТЫ И ТИПОГРАФИКА
+   ========================================================= */
+* {
+    box-sizing: border-box;
 }
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--c-surface);
+    color: var(--c-ink);
+    font-family: var(--f-body);
+    font-size: 16px;
+    line-height: 1.35;
+}
+body.modal-open {
+    overflow: hidden;
+}
+/* Готический шрифт — только для заголовков */
+h1, h2, h3,
+#char-name,
+.category-head,
+.mobile-col-title,
+.catalog-category {
+    font-family: var(--f-heading);
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    color: var(--c-ink);
+    margin: 0;
+}
+h1, h2,#char-name{
+    font-size: var(--fs-xl);
+    line-height: 1.1;
+}
+h3, .category-head, .mobile-col-title, .catalog-category {
+    font-size: var(--fs-lg);
+    line-height: 1.2;
+}
+/* Подписи полей (основной шрифт) */
+label {
+    display: block;
+    font-family: var(--f-body);
+    font-size: var(--fs-md);
+    font-weight: bold;
+    color: var(--c-ink);
+    margin-top: 14px;
+    margin-bottom: 6px;
+}
+.details-group > label:first-child,
+.extra-inventory-group > label:first-child,
+.bottom-col > label:first-child,
+.form-group > label:first-child {
+    margin-top: 0;
+}
+.hidden {
+    display: none !important;
+}
+/* =========================================================
+   3. СЕТКА ЛИСТА И ГЛАВНОГО МЕНЮ
+   ========================================================= */
 #app-container{
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color:#fffcf5; /* Светлый бумажный фон */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    /* CSS Grid для ПК-версии */
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 24px;
+    background-color: var(--c-bg);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 28px;
 }
-/* Нижний блок растягивается на обе колонки */
 .bottom-col {
-    grid-column: 1 / -1; 
+    grid-column: 1 / -1;
+    border-top: var(--border-bold);
+    padding-top: 16px;
 }
-/* Оформление полей ввода (стилизация под печатный лист) */
-input, textarea {
+/* Главная страница (index.html) */
+#app-container.menu-container {
+    max-width: 600px;
+    display: block;
+    margin: 40px auto;
+}
+.menu-title {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.menu-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+.menu-subtitle {
+    border-bottom: var(--border-bold);
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+}
+/* =========================================================
+   4. ПОЛЯ ВВОДА И ВЫПАДАЮЩИЕ СПИСКИ
+   ========================================================= */
+input, textarea, select {
+    font-family: var(--f-body);
+    font-size: var(--fs-md);
+    color: var(--c-ink);
+    background-color: var(--c-bg);
+    border: var(--border-main);
+	border-radius: var(--radius);
+    padding: 6px 10px;
+    outline: none;
+    transition: box-shadow 0.15s ease;
+}
+input:focus, textarea:focus, select:focus {
+    box-shadow: var(--shadow);
+}
+/* Поле имени мыши в шапке */
+#char-name{
+    border: none;
+    border-radius: 0;
+    padding: 0;
     background: transparent;
-    font-size: 1.8rem;
+    width: 100%;
+    flex: 1;
+    min-width: 0;
+}
+#char-name:focus {
+    box-shadow: none;
+}
+#char-name::placeholder {
+    color: var(--c-ink);
+    opacity: 0.45;
 }
 .input-line {
     width: 100%;
-    border-bottom: 1px solid#999;
-    padding: 4px 4px 4px 4px;
-    margin-bottom: 15px;
-}
-.input-line:focus {
-    border-bottom-color:#999;
+    margin-bottom: 12px;
 }
 .input-short {
-    width: 50px;
+    width: 60px;
     text-align: center;
-    border-bottom: 1px solid#999;
-
-}
-.level-xp {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.level-xp label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 0;
+    padding: 4px 6px;
 }
 .input-pips {
-    width: 100px;
-    display: inline-block;
-	border-bottom: 1px solid#999;
-}
-.text-large {
-	width: 100%;
-    font-size: 2.5rem;
+    width: 90px;
+    text-align: center;
+    padding: 4px 6px;
+    margin-bottom: 0;
 }
 .input-area {
     width: 100%;
-    border: 1px solid#999;
-    padding: 8px;
     resize: vertical;
-    background: #fff;
-	font-size: 1.2rem;
+    min-height: 76px;
+    margin-bottom: 12px;
 }
-label {
-    display: block;
-    font-size: 2.2rem;
-	margin-top: 5px;
-    margin-bottom: 3px;
-    letter-spacing: 0.5px;
-}
-
-/* Сетка для СИЛ, ЛОВ, ВОЛ, ЗАЩ */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-    margin: 20px 0;
-}
-.stat-box {
-    text-align: center;
-    background:#f0ebe1;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid#999;
-}
-.stat-box label {
-    margin-bottom: 8px;
-}
-.input-stat {
-    width: 50px;
-    text-align: center;
-    font-size: 1.8rem;
-    background:#fff;
-    border: 1px solid#999;
-    border-radius: 4px;
-}
-/* Заголовки инвентаря и кнопка + */
-.inventory-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid#999;
-	font-weight: normal;
-}
-.inventory-header h2 {
-	font-size: 2.5rem;
-	font-weight: normal;
-	margin: 0;
-}
-.btn-add {
-    background:#1a1a1a;
-    color:#fff;
-    font-size: 2.2rem;
-    line-height: 1;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.btn-add:hover {
-    background:#999;
-}
-.category-head {
-    font-size: 2.2rem;
-    margin: 15px 0 10px 0;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px dotted#ccc;
-    padding-bottom: 4px;
-}
-.slot-count {
-    color:#999;
-    font-size: 1.8rem;
-}
-.inventory-list {
-    min-height: 40px; /* Чтобы пустая таблица не схлопывалась */
-}
-/* Текст перегруза */
-.overload-text {
-    font-size: 1.06rem;
-    font-weight: bold;
-    color: #800000;
-    margin-bottom: 10px;
-}
-.hidden {
-    display: none;
-}
+/* Выпадающие списки */
 .native-select-wrapper {
     position: relative;
     width: 100%;
+    height: 38px;
+    margin-bottom: 12px;
 }
-
 .scrollable-native-select {
     width: 100%;
-    font-size: 1.2rem;
-    padding: 6px;
-    background:#fff;
-    border: 1px solid #999;
-    border-radius: 4px;
+    cursor: pointer;
 }
-
-/* При открытии переходит в абсолютный слой */
 .scrollable-native-select:focus {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-
-/* css/components.css — Модальные окна */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
+/* =========================================================
+   5. КНОПКИ (ЕДИНЫЙ СТИЛЬ)
+   ========================================================= */
+button,
+.btn-primary,
+.btn-action,
+.btn-add,
+.menu-upload-label {
+    font-family: var(--f-body);
+    font-size: var(--fs-md);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--c-bg);
+    background-color: var(--c-ink);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    text-align: center;
+    transition: opacity 0.15s ease, box-shadow 0.15s ease;
 }
-.modal-overlay.hidden { display: none; }
-.modal-content.hidden { display: none; }
-.modal-content {
-    background:#fffcf5;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    border: 1px solid#999;
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh; /* Чтобы окно не вылезало за экран */
+button:hover,
+.btn-primary:hover,
+.btn-action:hover,
+.btn-add:hover,
+.menu-upload-label:hover {
+    opacity: 0.88;
+    box-shadow: var(--shadow);
 }
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #999;
-}
-
-.modal-header h3{
-    font-size: 2.5rem;
-    margin: 0;
-    line-height: 1.2;
-	font-weight: normal;
-}
-
-.btn-close {
-    background: none; border: none; font-size: 2.2rem; line-height: 1;
-    cursor: pointer; color: #999;
-}
-.modal-body {
-    overflow-y: auto;
-    margin-bottom: 15px;
-}
-.btn-primary, .btn-action {
-    width: 100%; padding: 12px; margin-bottom: 8px;
-    background: #333; color: white; border: none; border-radius: 10px;
-    cursor: pointer; font-size: 1.3rem; text-transform: uppercase;
-	font-family: 'Fira Sans Condensed', sans-serif;
-}
-
-/* Увеличенный размер для select и его вариантов */
-select.input-line {
-    font-size: 1rem;
-    padding: 3px 10px;
-    height: auto;
-    border: 1px solid #999;
-    border-radius: 4px;
-    background-color: #fff;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
-
-select.input-line option {
-    font-size: 1rem;
-    padding: 4px;
-}
-.btn-primary:hover, .btn-action:hover { background:#555; }
-.btn-action.delete { background:#800000; }
-.btn-action.delete:hover { background:#a00000; }
-/* Стили каталога */
-.catalog-category {
-    font-family: 'Hangyaku', sans-serif;
-    font-size: 2.2rem;
-    letter-spacing: 1px;
-    margin-top: 10px;
-    color: #1a1a1a;
-	cursor: pointer;
-    user-select: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 4px;
-    border-bottom: 1px solid #ccc;
-}
-.catalog-category::after {
-    content: "▸";
-    font-size: 1.2rem;
-}
-.catalog-category.open::after {
-    content: "▾";
-}
-.catalog-category-items.hidden {
-    display: none;
-}
-.catalog-item {
-    padding: 5px; border-bottom: 2px dotted #999; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
-	font-size: 1.2rem;
-}
-.catalog-item:hover { background: rgba(0,0,0,0.05); }
-.catalog-item-size { font-size: 1rem; color: #888; }
-
-
-/* css/inventory.css — Оформление списков снаряжения */
-.inventory-item {
-    border: 1px solid#555;
-    border-radius: 6px;
-    padding: 8px 10px;
+.btn-primary,
+.btn-action {
+    width: 100%;
     margin-bottom: 8px;
-    background-color:#fdfbf7;
+}
+.menu-actions-grid .btn-primary {
+    margin-bottom: 0;
+}
+.btn-add {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: var(--fs-lg);
+    line-height: 1;
+    flex-shrink: 0;
+}
+.btn-action.delete {
+    background-color: var(--c-danger);
+    border-color: var(--c-danger);
+}
+/* =========================================================
+   6. ШАПКА КОЛОНОК И ХАРАКТЕРИСТИКИ
+   ========================================================= */
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-bottom: var(--border-bold);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+.level-xp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.level-xp label,
+.pips-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+.pips-group {
+    margin: 14px 0;
+}
+/* Сетка характеристик (4 в ряд на ПК) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+}
+.stat-box {
+    background-color: var(--c-surface);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    padding: 10px 6px;
+    text-align: center;
+}
+.stat-box label {
+    margin: 0 0 6px 0;
+    font-size: var(--fs-md);
+}
+.stat-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-weight: bold;
+}
+.input-stat {
+    width: 42px;
+    padding: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+/* =========================================================
+   7. СНАРЯЖЕНИЕ И КАРТОЧКИ ПРЕДМЕТОВ
+   ========================================================= */
+.category-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: var(--border-main);
+    padding-bottom: 4px;
+    margin: 16px 0 8px 0;
+}
+.slot-count {
+    font-family: var(--f-body);
+    font-size: var(--fs-sm);
+    font-weight: bold;
+}
+.inventory-list {
+	min-height: 42px;
+}
+.inventory-item {
+    background-color: var(--c-bg);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    margin-bottom: 8px;
     cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.15s ease, background-color 0.15s ease;
 }
 .inventory-item:hover {
-    background-color:#fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--c-surface);
+    box-shadow: var(--shadow);
 }
 .item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
+    gap: 8px;
 }
 .item-name {
-    font-size: 1.2rem;
-    color:#1a1a1a;
+    font-size: var(--fs-md);
+    font-weight: bold;
 }
 .item-detail {
-    font-size: 1rem;
-    color:#666;
-    line-height: 1.2;
+    font-size: var(--fs-sm);
+    margin-top: 2px;
 }
-/* Контейнер для кружочков прочности */
+/* Точки прочности */
 .uses-container {
     display: flex;
-    gap: 4px;
+    gap: 6px;
+    flex-shrink: 0;
 }
 .use-circle {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    border: 2px solid#1a1a1a;
-    background-color: transparent;
+    border: var(--border-bold);
+    background-color: var(--c-bg);
     cursor: pointer;
-    transition: background-color 0.1s;
 }
 .use-circle.filled {
-    background-color:#1a1a1a;
+    background-color: var(--c-ink);
 }
-/* Пустая строка (штриховая обводка) */
+/* Пустой слот */
 .empty-slot {
-    border: 2px dashed#999;
-    border-radius: 6px;
-    height: 44px; /* Примерная высота компактной строки */
+    height: 42px;
+    border: 2px dashed var(--c-surface);
+    border-radius: var(--radius);
     margin-bottom: 8px;
-    background-color: rgba(0, 0, 0, 0.02);
+}
+/* Плашка перегруза */
+.overload-text {
+    background-color: var(--c-danger);
+    color: var(--c-bg);
+    font-size: var(--fs-sm);
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+}
+/* =========================================================
+   8. МОДАЛЬНЫЕ ОКНА (ПОПАПЫ) И КАТАЛОГ
+   ========================================================= */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(34, 34, 34, 0.65);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    z-index: 1000;
+}
+.modal-content {
+    background-color: var(--c-bg);
+    border: var(--border-bold);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 420px;
+    max-height: 88vh;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border-bottom: var(--border-bold);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+.btn-close {
+    background: transparent;
+    color: var(--c-ink);
+    border: none;
+    font-size: var(--fs-xl);
+    line-height: 1;
+    padding: 0 6px;
+    width: auto;
+}
+.btn-close:hover {
+    box-shadow: none;
+    opacity: 0.6;
+}
+.modal-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 12px;
+    flex: 1;
+    min-height: 0;
+}
+/* Категории и элементы каталога */
+.catalog-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    margin-top: 6px;
+    background-color: var(--c-surface);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    cursor: pointer;
+    user-select: none;
+}
+.catalog-category::after {
+    content: "▸";
+    font-family: var(--f-body);
+    font-size: var(--fs-md);
+}
+.catalog-category.open::after {
+    content: "▾";
+}
+.catalog-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: var(--border-subtle);
+    cursor: pointer;
+}
+.catalog-item:hover {
+    background-color: var(--c-surface);
+}
+.catalog-item-name {
+    font-size: var(--fs-md);
+}
+.catalog-item-size {
+    font-size: var(--fs-sm);
+}
+/* Блок +/- использования внутри попапа */
+.use-control-block,
+#action-buttons> div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background-color: var(--c-surface) !important;
+    border: var(--border-main);
+    border-radius: var(--radius) !important;
+    padding: 6px !important;
+    margin-bottom: 10px !important;
+}
+.use-control-block span,
+#action-buttons> div:first-child span {
+    color: var(--c-ink) !important;
+    font-size: var(--fs-md) !important;
+    font-weight: bold;
+    text-align: center;
+}
+/* =========================================================
+9. МОБИЛЬНАЯ НАВИГАЦИЯ И АДАПТАЦИЯ (<= 1000px)
+   ========================================================= */
+.mobile-col-nav {
+    display: none;
+}
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+    }
+    #app-container,
+    #app-container.menu-container {
+        width: 100%;
+        max-width: 100vw;
+        margin: 0;
+        padding: 14px;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+        overflow-x: hidden;
+    }
+    /* Жестко ограничиваем ширину колонок и полей по ширине экрана */
+    .left-col,
+    .right-col,
+    .bottom-col,
+    .header-group,
+    .details-group,
+    .native-select-wrapper,
+    select,
+    textarea,
+    .input-line {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    /* Таблица характеристик 2x2 на мобильных */
+    .stats-grid,
+#app-container.stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        width: 100%;
+    }
+    .stat-box,
+#app-container.stat-box {
+        width: 100%;
+        min-width: 0;
+    }
+    /* Главная страница: сетка кнопок 4x1 */
+    .menu-actions-grid,
+#app-container> div[style="grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    /* Панель переключения колонок: < Основное / Снаряжение > */
+    .mobile-col-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        background-color: var(--c-surface);
+        border: var(--border-main);
+        border-radius: var(--radius);
+        padding: 6px 8px;
+        margin-bottom: 14px;
+        user-select: none;
+    }
+    .btn-col-switch {
+        width: 38px;
+        height: 34px;
+        padding: 0;
+        font-size: var(--fs-md);
+        flex-shrink: 0;
+    }
+    /* Переключение левой и правой колонок (Заметки всегда остаются внизу) */
+#app-container.mobile-show-left .right-col {
+        display: none;
+    }
+#app-container.mobile-show-right .left-col {
+        display: none;
+    }
+    /* Увеличенные точки прочности для сенсорного экрана */
+    .use-circle {
+        width: 18px;
+        height: 18px;
+    }
+    /* Попапы на всю доступную ширину мобильного экрана */
+    .modal-overlay {
+        padding: 10px;
+    }
+    .modal-content {
+        max-width: 100%;
+        padding: 14px;
+    }
 }
