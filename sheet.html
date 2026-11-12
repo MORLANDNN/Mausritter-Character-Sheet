@@ -12,15 +12,20 @@
         <!-- ЛЕВАЯ КОЛОНКА -->
         <section class="left-col">
             <div class="header-group">
-				<div class="inventory-header">
-					<input type="text" id="char-name" placeholder="Имя мыши" class="text-large">
-					<button id="btn-menu" class="btn-add" style="width: auto; border-radius: 6px; padding: 0 15px; font-size: 1.1rem; height: 35px;">Меню</button>
-				</div>
-				<div class="level-xp">
-						<label>Уровень: <input type="number" id="char-level" value="0" class="input-short"></label>
-						<label>XP: <input type="number" id="char-xp" value="0" class="input-pips"></label>
-						<label>Выдержка: <input type="number" id="char-grit" value="0" class="input-short"></label>
-				</div>
+			<div class="mobile-col-nav">
+                    <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка"><</button>
+                    <span class="mobile-col-title">Основное</span>
+                    <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">></button>
+                </div>
+                <div class="inventory-header">
+                    <input type="text" id="char-name" placeholder="Имя мыши" class="text-large">
+                    <button id="btn-menu" class="btn-add" style="width: auto; border-radius: 6px; padding: 0 15px; font-size: 1.1rem; height: 35px;">Меню</button>
+                </div>
+                    <div class="level-xp">
+                    <label>Уровень: <input type="number" id="char-level" value="0" class="input-short"></label>
+                    <label>XP: <input type="number" id="char-xp" value="0" class="input-pips"></label>
+                    <label>Выдержка: <input type="number" id="char-grit" value="0" class="input-short"></label>
+                </div>
             </div>
             <!-- Характеристики -->
             <div class="stats-grid">
@@ -117,6 +122,11 @@
         <!-- ПРАВАЯ КОЛОНКА -->
         <section class="right-col">
             <div class="inventory-section">
+			<div class="mobile-col-nav">
+                    <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка"><</button>
+                    <span class="mobile-col-title">Снаряжение</span>
+                    <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">></button>
+                </div>
                 <div class="inventory-header">
                     <h2>Снаряжение</h2>
                     <button id="btn-add-item" class="btn-add">+</button>
@@ -156,7 +166,7 @@
         <!-- 1. Каталог предметов -->
         <div id="modal-catalog" class="modal-content hidden">
             <div class="modal-header">
-                <h3>Добавить предмет</h3>
+                <h2>Добавить предмет</h2>
                 <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
             </div>
             <div class="modal-body" id="catalog-list"></div>
@@ -211,7 +221,7 @@
         <!-- 4. Выбор куда положить предмет -->
         <div id="modal-location" class="modal-content hidden">
             <div class="modal-header">
-                <h3 id="location-item-name">Куда положить?</h3>
+                <h2 id="location-item-name">Куда положить?</h2>
                 <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
             </div>
             <div class="modal-body" id="location-buttons"></div>
