@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = "mausritter_backup.json";
+        a.download = "mausritter_sheet.json";
         a.click();
         URL.revokeObjectURL(url);
     });
