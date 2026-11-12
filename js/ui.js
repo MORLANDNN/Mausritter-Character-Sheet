@@ -43,10 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (pipsInput) {
         pipsInput.addEventListener('input', (e) => InventoryLogic.setPips(e.target.value));
     }
-    // 4. РАСКРЫТИЕ ВЫПАДАЮЩИХ СПИСКОВ НА 5 СТРОК
+    // 4. РАСКРЫТИЕ ВЫПАДАЮЩИХ СПИСКОВ НА 5 СТРОК (только на ПК)
     document.querySelectorAll('.scrollable-native-select').forEach(selectEl => {
         selectEl.addEventListener('focus', function() {
-            this.size = 5;
+            if (window.innerWidth > 768) {
+                this.size = 5;
+            }
         });
         selectEl.addEventListener('change', function() {
             this.size = 1;
@@ -57,6 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
             this.size = 1;
         });
     });
+    // 4.1. МОБИЛЬНОЕ ПЕРЕКЛЮЧЕНИЕ КОЛОНОК (КНОПКИ + СВАЙП)
+    initMobileColumns();
 	// Кнопка menu
 	const btnMenu = document.getElementById('btn-menu');
     if (btnMenu) {
@@ -64,6 +68,60 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "index.html";
         });
     }
+	// МОБИЛЬНАЯ НАВИГАЦИЯ И СВАЙПЫ
+	function initMobileColumns() {
+    const appContainer = document.getElementById('app-container');
+    if (!appContainer) return;
+    let currentCol = 'left'; // 'left' (Основное) или 'right' (Снаряжение)
+    function setMobileCol(col) {
+        currentCol = col;
+        appContainer.classList.remove('mobile-show-left', 'mobile-show-right');
+        appContainer.classList.add(col === 'left' ? 'mobile-show-left' : 'mobile-show-right');
+    }
+    function toggleMobileCol() {
+        setMobileCol(currentCol === 'left' ? 'right' : 'left');
+    }
+    // По умолчанию открыта левая колонка (Основное)
+    setMobileCol('left');
+    // Кнопки "<" и ">"
+    document.querySelectorAll('.btn-col-switch').forEach(btn => {
+        btn.addEventListener('click', () => {
+            toggleMobileCol();
+        });
+    });
+    // Обработка свайпов
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwipingFromInput = false;
+    appContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        const tag = e.target.tagName.toLowerCase();
+        // Не перехватываем свайп, если пользователь выделяет текст или крутит поле ввода
+        isSwipingFromInput = (tag === 'input' || tag === 'textarea' || tag === 'select');
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    appContainer.addEventListener('touchend', (e) => {
+        if (window.innerWidth > 768 || isSwipingFromInput) return;
+        // Если открыт попап — свайп колонок не срабатывает
+        const overlay = document.getElementById('modal-overlay');
+        if (overlay && !overlay.classList.contains('hidden')) return;
+        if (e.changedTouches.length !== 1) return;
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        // Свайп засчитывается, если смещение по горизонтали > 55px и явно превышает вертикальный скролл
+        if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+            if (deltaX < 0 && currentCol === 'left') {
+                // Свайп влево -> переход к "Снаряжению"
+                setMobileCol('right');
+            } else if (deltaX > 0 && currentCol === 'right') {
+                // Свайп вправо -> возврат к "Основному"
+                setMobileCol('left');
+            }
+        }
+    }, { passive: true });
+}
+
 
     // 5. ЗАГРУЗКА СОХРАНЕНИЯ ИЗ LOCALSTORAGE ПРИ СТАРТЕ
 	// --- ЗАГРУЗКА ПЕРСОНАЖА ПО ID ИЛИ ВОЗВРАТ В МЕНЮ ---
@@ -167,12 +225,18 @@ function renderList(containerId, items) {
     }
 }
 // --- ЛОГИКА МОДАЛЬНЫХ ОКОН (ПОПАПОВ) ---
-const UI_Modals = {
-    overlay: () => document.getElementById('modal-overlay'),
-    closeAll() {
-        this.overlay().classList.add('hidden');
-        document.querySelectorAll('.modal-content').forEach(el => el.classList.add('hidden'));
-    },
+	const UI_Modals = {
+		overlay: () => document.getElementById('modal-overlay'),
+		showOverlay() {
+			this.overlay().classList.remove('hidden');
+			document.body.classList.add('modal-open');
+		},
+		closeAll() {
+			this.overlay().classList.add('hidden');
+			document.body.classList.remove('modal-open');
+			document.querySelectorAll('.modal-content').forEach(el => el.classList.add('hidden'));
+		},
+
     // 1. КАТАЛОГ С РАСКРЫВАЮЩИМИСЯ КАТЕГОРИЯМИ
     openCatalog() {
         this.closeAll();
@@ -202,7 +266,7 @@ const UI_Modals = {
         if (CharacterState.data.customItems.length > 0) {
 			renderCategorySection('Созданные вами', CharacterState.data.customItems, true);
         }
-        this.overlay().classList.remove('hidden');
+        this.showOverlay();
         document.getElementById('modal-catalog').classList.remove('hidden');
     },
     createCatalogItemEl(template, isCustom = false) {
@@ -224,7 +288,7 @@ const UI_Modals = {
         document.getElementById('custom-slots').value = '1';
         document.getElementById('custom-weapon-block').classList.add('hidden');
         document.getElementById('custom-slots-block').classList.remove('hidden');
-        this.overlay().classList.remove('hidden');
+        this.showOverlay();
         document.getElementById('modal-create').classList.remove('hidden');
     },
     saveCustomItem() {
@@ -340,7 +404,7 @@ const UI_Modals = {
             };
             container.appendChild(btn);
         });
-        this.overlay().classList.remove('hidden');
+        this.showOverlay();
         document.getElementById('modal-actions').classList.remove('hidden');
     },
     // 4. ПОПАП ВЫБОРА МЕСТА
@@ -408,7 +472,7 @@ const UI_Modals = {
                 container.appendChild(btnEquip);
             }
         }
-        this.overlay().classList.remove('hidden');
+        this.showOverlay();
         document.getElementById('modal-location').classList.remove('hidden');
     }
 };
