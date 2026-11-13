@@ -3,7 +3,7 @@ const InventoryLogic = {
     // 1. ПОДСЧЕТ ЗАНЯТЫХ ЯЧЕЕК
     // Сколько слотов занимают зернышки (каждая полная сотня = 1 слот в мешке)
     getPipsSlots(pipsCount = CharacterState.data.pips) {
-        return Math.floor(Math.max(0, pipsCount) / 100);
+        return Math.floor(Math.max(0, pipsCount) / 250);
     },
     // Занято в лапах
     getUsedPaws() {
