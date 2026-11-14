@@ -12,8 +12,7 @@ const GameData = {
         armor: "Броня",
         item: "Предметы",
         spell: "Заклинания",
-        condition: "Состояния",
-        pips: "Зернышки"
+        condition: "Состояния"
     },
     // База предметов
     itemDatabase: {
@@ -62,6 +61,20 @@ const GameData = {
 				twoPaws: {size:2, detail: "d8"}
 			}
         },
+		"pickaxe": {
+            id: "pickaxe",
+            name: "Кирка",
+            type: "weapon",
+            detail: "d6/d8",
+            maxUses: 3,
+            packSize: 1,
+            pawsSize: 1,
+            bodySize: 0,
+			versatile: {
+				onePaw: {size: 1, detail: "d6"},
+				twoPaws: {size:2, detail: "d8"}
+			}
+        },
 		"axe": {
             id: "axe",
             name: "Топор",
@@ -79,6 +92,20 @@ const GameData = {
 		"mace": {
             id: "mace",
             name: "Булава",
+            type: "weapon",
+            detail: "d6/d8",
+            maxUses: 3,
+            packSize: 1,
+            pawsSize: 1,
+            bodySize: 0,
+			versatile: {
+				onePaw: {size: 1, detail: "d6"},
+				twoPaws: {size:2, detail: "d8"}
+			}
+        },
+		"warhammer_2": {
+            id: "warhammer_2",
+            name: "Молот",
             type: "weapon",
             detail: "d6/d8",
             maxUses: 3,
@@ -166,7 +193,7 @@ const GameData = {
             id: "rations",
             name: "Паёк",
             type: "item",
-            detail: "Восстанавливает d6 ОЗ при передышке",
+            detail: "",
             maxUses: 3,
             packSize: 1,
             pawsSize: 1,
@@ -176,7 +203,7 @@ const GameData = {
             id: "torch",
             name: "Факел",
             type: "item",
-            detail: "Освещает путь (1 точка за смену)",
+            detail: "",
             maxUses: 3,
             packSize: 1,
             pawsSize: 1,
@@ -315,16 +342,6 @@ const GameData = {
         "chisel": {
             id: "chisel",
             name: "Зубило",
-            type: "item",
-            detail: "",
-            maxUses: 0,
-            packSize: 1,
-            pawsSize: 1,
-            bodySize: 0
-        },
-        "pickaxe": {
-            id: "pickaxe",
-            name: "Кирка",
             type: "item",
             detail: "",
             maxUses: 0,
@@ -743,7 +760,343 @@ const GameData = {
             packSize: 1,
             pawsSize: 0,
             bodySize: 0
+        },
+		// --- ДОПОЛНИТЕЛЬНЫЕ ПРЕДМЕТЫ ИЗ ТАБЛИЦЫ ПРОИСХОЖДЕНИЙ ---
+        "milk_bottle": { 
+		id: "milk_bottle", 
+		name: "Бутылка молока", 
+		type: "item", 
+		detail: "",
+		maxUses: 3, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "incense_stick": { 
+		id: "incense_stick", 
+		name: "Ароматическая палочка", 
+		type: "item", 
+		detail: "", 
+		maxUses: 3, 
+		packSize: 1,
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "scissors": { 
+		id: "scissors", 
+		name: "Ножницы",
+		type: "item",
+		detail: "",
+		maxUses: 3,
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "coffee_flask": { 
+		id: "coffee_flask", 
+		name: "Фляжка кофе", 
+		type: "item", 
+		detail: "", 
+		maxUses: 3, 
+		packSize: 1,
+		pawsSize: 1,
+		bodySize: 0 
+		},
+        "holy_symbol": {
+		id: "holy_symbol", 
+		name: "Святой символ", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1,
+		bodySize: 0 
+		},
+        "ale_keg": { 
+		id: "ale_keg", 
+		name: "Бочонок эля", 
+		type: "item", 
+		detail: "", 
+		maxUses: 3, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "wire": { 
+		id: "wire", 
+		name: "Проволока", 
+		type: "item", 
+		detail: "Катушка", 
+		maxUses: 3, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "rope": { 
+		id: "rope", 
+		name: "Верёвка", 
+		type: "item", 
+		detail: "Моток", 
+		maxUses: 3, 
+		packSize: 1, 
+		pawsSize: 1,
+		bodySize: 0 
+		},
+        "bat_teeth_bag": { 
+		id: "bat_teeth_bag", 
+		name: "Мешок зубов летучих мышей", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "trash_hook": { 
+		id: "trash_hook", 
+		name: "Крюк для мусора", 
+		type: "weapon", 
+		detail: "d10", 
+		maxUses: 3, 
+		packSize: 1, 
+		pawsSize: 2, 
+		bodySize: 0 
+		},
+        "fishhook": { 
+		id: "fishhook", 
+		name: "Рыболовный крючок", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "thread": { 
+		id: "thread", 
+		name: "Нить", 
+		type: "item", 
+		detail: "Катушка", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "promissory_note": { 
+		id: "promissory_note",
+		name: "Вексель на 20 з. от благородного дома", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "soap": { 
+		id: "soap", 
+		name: "Мыло", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "goggles": { 
+		id: "goggles", 
+		name: "Защитные очки", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 0, 
+		bodySize: 0 
+		},
+        "chain": { 
+		id: "chain", 
+		name: "Цепь", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "dried_mushrooms": { 
+		id: "dried_mushrooms", 
+		name: "Сушёные грибы", 
+		type: "item", 
+		detail: "Паёк", 
+		maxUses: 3, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "spore_mask": { 
+		id: "spore_mask", 
+		name: "Маска от спор", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 0, 
+		bodySize: 1 
+		},
+        "quill_ink": { 
+		id: "quill_ink", 
+		name: "Перо и чернила", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "compass": { 
+		id: "compass", 
+		name: "Компас", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "cheese": { 
+		id: "cheese", 
+		name: "Кусок сыра", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+		"dubious_map": { 
+		id: "dubious_map", 
+		name: "Недостоверная карта сокровищ", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "sealed_docs": { 
+		id: "sealed_docs", 
+		name: "Запечатанные документы", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "disguise_kit": { 
+		id: "disguise_kit", 
+		name: "Гримировальный набор", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "honey_pot": { 
+		id: "honey_pot", 
+		name: "Горшок с мёдом", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "mystery_book_scrap": { 
+		id: "mystery_book_scrap", 
+		name: "Обрывок таинственной книги", 
+		type: "item", detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 1, 
+		bodySize: 0 
+		},
+        "felt_hat": { 
+		id: "felt_hat", 
+		name: "Фетровая шляпа", 
+		type: "item", 
+		detail: "", 
+		maxUses: 0, 
+		packSize: 1, 
+		pawsSize: 0, 
+		bodySize: 1 
+		}
+    },
+    // Таблицы для генератора персонажа
+    generatorTables: {
+        birthsigns: [
+            "Звезда - храбрый/безрассудный",
+            "Колесо - Трудолюбивый/приземлённый",
+            "Жёлудь - Любознательный/упрямый",
+            "Буря - Благородный/гневливый",
+            "Луна - Мудрый/таинственный",
+            "Мать - Заботливый/тревожный"
+        ],
+        coatColors: [
+            "Шоколадный", "Чёрный", "Белый", "Коричневый", "Серый", "Голубой"
+        ],
+        coatPatterns: [
+            "Однотонная шкурка", "Пегий", "Пятнистый", "Полосатый", "Мраморный", "В крапинку"
+        ],
+        features: [
+            "Шрамы", "Упитанный", "Тощий", "Стройный", "Крошечный", "Крупный",
+            "Боевой раскрас", "Иноземная одежда", "Изящная одежда", "Залатанная одежда", "Модная одежда", "Нестиранная одежда",
+            "Нет уха", "Бугристая мордочка", "Красивая мордочка", "Круглая мордочка", "Изящная мордочка", "Длинная мордочка",
+            "Ухоженный мех", "Свалявшиеся космы", "Крашенный мех", "Выбритый мех", "Кудрявый мех", "Шелковистый мех",
+            "Чёрные как ночь глаза", "Повязка на глазу", "Кроваво-красные глаза", "Мудрые глаза", "Проницательные глаза", "Сияющие глаза",
+            "Обрезанный хвост", "Хлыстообразный хвост", "Хвост с пушком", "Короткий хвост", "Цепкий хвост", "Хвост крючком"
+        ],
+        // Ключ: "ОЗ_Зёрнышки"
+        backgrounds: {
+            "1_1": { name: "Подопытный", itemA: { id: "spell_magic_missile", label: 'Заклинание "Магический снаряд"' }, itemB: { id: "heavy_armor", label: "Свинцовый фартук, 1 ПБ" } },
+            "1_2": { name: "Повар", itemA: { id: "light_armor", label: "Щит и куртка" }, itemB: { id: "cooking_pot", label: "Котелок" } },
+            "1_3": { name: "Житель клетки", itemA: { id: "spell_open_heart", label: 'Заклинание "Открытое сердце"' }, itemB: { id: "milk_bottle", label: "Бутылка молока" } },
+            "1_4": { name: "Знахарь", itemA: { id: "spell_heal", label: 'Заклинание "Исцеление"' }, itemB: { id: "incense_stick", label: "Ароматическая палочка" } },
+            "1_5": { name: "Кожевник", itemA: { id: "light_armor", label: "Щит и куртка (Лёгкая броня)" }, itemB: { id: "scissors", label: "Ножницы" } },
+            "1_6": { name: "Уличный бандит", itemA: { id: "dagger", label: "Кинжал" }, itemB: { id: "coffee_flask", label: "Фляжка кофе" } },
+            "2_1": { name: "Нищий священник", itemA: { id: "spell_restore", label: 'Заклинание "Восстановление"' }, itemB: { id: "holy_symbol", label: "Святой символ" } },
+            "2_2": { name: "Пчелопас", itemA: { id: "hireling_bee", label: "Подёнщик: верная пчела" }, itemB: { id: "wooden_pole", label: "Шест, 6 дюймов" } },
+            "2_3": { name: "Пивовар", itemA: { id: "hireling_torchbearer", label: "Подёнщик: пьяный факелоносец" }, itemB: { id: "ale_keg", label: "Бочонок эля" } },
+            "2_4": { name: "Рыбак", itemA: { id: "net", label: "Сеть" }, itemB: { id: "needle", label: "Игла" } },
+            "2_5": { name: "Кузнец", itemA: { id: "warhammer_2", label: "Молоток" }, itemB: { id: "file", label: "Напильник" } },
+            "2_6": { name: "Проволочник", itemA: { id: "wire", label: "Проволока" }, itemB: { id: "electric_lantern", label: "Электрический фонарь" } },
+            "3_1": { name: "Резчик по дереву", itemA: { id: "axe", label: "Топор" }, itemB: { id: "rope", label: "Верёвка" } },
+            "3_2": { name: "Сектант", itemA: { id: "spell_darkness", label: 'Заклинание "Тьма"' }, itemB: { id: "bat_teeth_bag", label: "Мешок зубов летучих мышей" } },
+            "3_3": { name: "Оловодобытчик", itemA: { id: "pickaxe", label: "Кирка" }, itemB: { id: "lantern", label: "Лампа" } },
+            "3_4": { name: "Мусорщик", itemA: { id: "trash_hook", label: "Крюк для мусора" }, itemB: { id: "mirror", label: "Зеркало" } },
+            "3_5": { name: "Стенолаз", itemA: { id: "fishhook", label: "Рыболовный крючок" }, itemB: { id: "thread", label: "Нить" } },
+			"3_6": { name: "Торговец", itemA: { id: "hireling_packrat", label: "Подёнщик: вьючная крыса" }, itemB: { id: "promissory_note", label: "Вексель на 20 з. от благородного дома" } },
+            "4_1": { name: "Матрос с плота", itemA: { id: "hammer", label: "Молоток" }, itemB: { id: "wooden_stakes", label: "Деревянные колья" } },
+            "4_2": { name: "Погонщик червей", itemA: { id: "wooden_pole", label: "Шест, 6 дюймов" }, itemB: { id: "soap", label: "Мыло" } },
+            "4_3": { name: "Воробьиный наездник", itemA: { id: "fishhook", label: "Рыболовный крючок" }, itemB: { id: "goggles", label: "Защитные очки" } },
+            "4_4": { name: "Проводник по канализации", itemA: { id: "file", label: "Напильник" }, itemB: { id: "thread", label: "Нить" } },
+            "4_5": { name: "Тюремный стражник", itemA: { id: "chain", label: "Цепь" }, itemB: { id: "spear", label: "Копьё" } },
+            "4_6": { name: "Фермер-грибник", itemA: { id: "dried_mushrooms", label: "Сушёные грибы" }, itemB: { id: "spore_mask", label: "Маска от спор" } },
+            "5_1": { name: "Строитель плотины", itemA: { id: "shovel", label: "Лопата" }, itemB: { id: "wooden_stakes", label: "Деревянные колья" } },
+            "5_2": { name: "Картограф", itemA: { id: "quill_ink", label: "Перо и чернила" }, itemB: { id: "compass", label: "Компас" } },
+            "5_3": { name: "Грабитель ловушек", itemA: { id: "cheese", label: "Кусок сыра" }, itemB: { id: "glue", label: "Клей" } },
+            "5_4": { name: "Бродяга", itemA: { id: "shelter", label: "Навес (Палатка)" }, itemB: { id: "dubious_map", label: "Недостоверная карта сокровищ" } },
+            "5_5": { name: "Фермер-зерновод", itemA: { id: "spear", label: "Копьё" }, itemB: { id: "whistle", label: "Свисток" } },
+            "5_6": { name: "Гонец", itemA: { id: "bedroll", label: "Спальный мешок" }, itemB: { id: "sealed_docs", label: "Запечатанные документы" } },
+            "6_1": { name: "Трубадур", itemA: { id: "musical_instrument", label: "Музыкальный инструмент" }, itemB: { id: "disguise_kit", label: "Гримировальный набор" } },
+            "6_2": { name: "Азартный игрок", itemA: { id: "loaded_dice", label: "Шулерские игральные кости" }, itemB: { id: "mirror", label: "Зеркало" } },
+            "6_3": { name: "Добытчик древесного сока", itemA: { id: "bucket", label: "Ведро" }, itemB: { id: "wooden_stakes", label: "Деревянные колья" } },
+            "6_4": { name: "Пчеловод", itemA: { id: "honey_pot", label: "Горшок с мёдом" }, itemB: { id: "net", label: "Сеть" } },
+            "6_5": { name: "Библиотекарь", itemA: { id: "mystery_book_scrap", label: "Обрывок таинственной книги" }, itemB: { id: "quill_ink", label: "Перо и чернила" } },
+            "6_6": { name: "Обнищавший дворянин", itemA: { id: "felt_hat", label: "Фетровая шляпа" }, itemB: { id: "perfume", label: "Духи" } }
         }
     }
+
+
 };
 

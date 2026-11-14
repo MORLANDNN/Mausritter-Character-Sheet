@@ -12,14 +12,14 @@
         <!-- ЛЕВАЯ КОЛОНКА -->
         <section class="left-col">
             <div class="header-group">
-			<div class="mobile-col-nav">
-                    <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка"><</button>
+                <div class="mobile-col-nav">
+                    <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка">&lt;</button>
                     <span class="mobile-col-title">Основное</span>
-                    <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">></button>
+                    <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">&gt;</button>
                 </div>
                 <div class="inventory-header">
-                    <input type="text" id="char-name" placeholder="Имя мыши" class="text-large">
-                    <button id="btn-menu" class="btn-add" style="width: auto; border-radius: 6px; padding: 0 15px; font-size: 1.1rem; height: 35px;">Меню</button>
+                    <input type="text" id="char-name" placeholder="Имя мыши">
+                    <button type="button" id="btn-menu" class="btn-menu">Меню</button>
                 </div>
                     <div class="level-xp">
                     <label>Уровень: <input type="number" id="char-level" value="0" class="input-short"></label>
@@ -115,17 +115,19 @@
 				</div>
                 <label>Внешность</label>
                 <textarea id="char-appearance" rows="3" class="input-area"></textarea>
-				<label>Игнорируемые состояния</label>
-				<textarea id="char-ignored-cond" rows="3" class="input-area"></textarea>
+				<div id="ignored-cond-block" class="hidden">
+					<label>Игнорируемые состояния</label>
+					<div id="ignored-cond-list"></div>
+				</div>
             </div>
         </section>
         <!-- ПРАВАЯ КОЛОНКА -->
         <section class="right-col">
             <div class="inventory-section">
 			<div class="mobile-col-nav">
-                    <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка"><</button>
+                    <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка">&lt;</button>
                     <span class="mobile-col-title">Снаряжение</span>
-                    <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">></button>
+                    <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">&gt;</button>
                 </div>
                 <div class="inventory-header">
                     <h2>Снаряжение</h2>
@@ -160,6 +162,24 @@
             <label>Заметки</label>
             <textarea id="char-notes" rows="6" class="input-area"></textarea>
         </section>
+
+		<!-- ТРЕТЬЯ КОЛОНКА: ПОДЁНЩИКИ -->
+        <section class="hirelings-col">
+            <div class="mobile-col-nav">
+                <button type="button" class="btn-col-switch" data-dir="prev" aria-label="Предыдущая колонка">&lt;</button>
+                <span class="mobile-col-title">Подёнщики</span>
+                <button type="button" class="btn-col-switch" data-dir="next" aria-label="Следующая колонка">&gt;</button>
+            </div>
+            <div class="inventory-header">
+                <h2>Подёнщики <span id="hirelings-count" class="slot-count">0/2</span></h2>
+                <button id="btn-add-hireling" class="btn-add">+</button>
+            </div>
+            <!-- Контейнер для карточек подёнщиков -->
+            <div id="hirelings-list" class="hirelings-container">
+                <!-- Пустая строка, как в инвентаре -->
+                <div class="empty-slot" id="hirelings-empty-slot"></div>
+            </div>
+        </section>
     </div>
 	<!-- МОДАЛЬНЫЕ ОКНА -->
     <div id="modal-overlay" class="modal-overlay hidden">
@@ -177,7 +197,7 @@
         <!-- 2. Создание своего предмета -->
         <div id="modal-create" class="modal-content hidden">
             <div class="modal-header">
-                <h3>Новый предмет</h3>
+                <h2>Новый предмет</h2>
                 <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
             </div>
             <div class="modal-body form-group">
@@ -192,13 +212,21 @@
                     </select>
                 </label>
                 <label>Описание / Урон: <input type="text" id="custom-detail" class="input-line"></label>
-                <label>Прочность: <input type="number" id="custom-uses" value="0" min="0" max="3" class="input-short"></label>
+                <label>Прочность: <input type="number" id="custom-uses" value="0" min="0" max="6" class="input-short"></label>
                 <div id="custom-weapon-block" class="hidden">
                     <label>Категория оружия:
                         <select id="custom-weapon-size" class="input-line">
                             <option value="light">Легкое</option>
                             <option value="medium">Среднее</option>
                             <option value="heavy">Тяжелое</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="custom-armor-block" class="hidden">
+                    <label>Категория брони:
+                        <select id="custom-armor-size" class="input-line">
+                            <option value="light">Легкая</option>
+                            <option value="heavy">Тяжелая</option>
                         </select>
                     </label>
                 </div>
@@ -213,7 +241,7 @@
         <!-- 3. Действия с предметом (Попап строки) -->
         <div id="modal-actions" class="modal-content hidden">
             <div class="modal-header">
-                <h3 id="action-item-name">Предмет</h3>
+                <h2 id="action-item-name">Предмет</h2>
                 <button class="btn-close" onclick="UI_Modals.closeAll()">×</button>
             </div>
             <div class="modal-body" id="action-buttons"></div>
@@ -228,6 +256,11 @@
         </div>
     </div>
 
+<footer class="site-footer">
+        This work is based on <a href="https://mausritter.com/" target="_blank" rel="noopener noreferrer">Mausritter</a>, 
+        a product of Losing Games and Isaac Williams, and is licensed for use under the 
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC BY 4.0)</a> licence.
+    </footer>
     <!-- Скрипты -->
     <script defer src="js/data.js"></script>
     <script defer src="js/state.js"></script>

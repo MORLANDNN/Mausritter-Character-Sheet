@@ -7,39 +7,47 @@
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Fira Sans Condensed';
     src: url('../fonts/FiraSansCondensed-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+
 :root {
     /* Палитра (строго 4 цвета) */
-    --c-bg:#fffcf5;      /* 1. Светлый пергамент */
-    --c-surface:#efebdc; /* 2. Бежевая подложка и мягкие линии */
-    --c-ink:#333333;     /* 3. Угольно-черный (текст, кнопки, контуры) */
-    --c-danger:#8b261d;  /* 4. Красный акцент (удаление, перегруз) */
+    --c-bg: #fffcf5;      /* 1. Светлый пергамент */
+    --c-surface: #efebdc; /* 2. Бежевая подложка и мягкие линии */
+    --c-ink: #333333;     /* 3. Угольно-черный (текст, кнопки, контуры) */
+    --c-danger: #8b261d;  /* 4. Красный акцент (удаление, перегруз) */
+
     /* Шрифты */
     --f-heading: 'Hangyaku', sans-serif;
     --f-body: 'Fira Sans Condensed', sans-serif;
+
     /* Единая шкала размеров шрифта */
     --fs-xl: 2.2rem;   /* Главные заголовки (h1, h2, имя мыши) */
-    --fs-lg: 1.5rem;   /* Подзаголовки (h3, категории, переключатель) */
+    --fs-lg: 1.8rem;   /* Подзаголовки (h3, категории, переключатель, имя подёнщика) */
     --fs-md: 1.1rem;   /* Основной текст, подписи, инпуты, кнопки */
-    --fs-sm: 0.95rem;  /* Детали предметов, счетчики ячеек */
+    --fs-sm: 0.95rem;  /* Детали предметов, счетчики ячеек, вторичный текст */
+    --fs-xs: 0.85rem;  /* Мелкий текст (футер) */
+
     /* Единые рамки, скругления и тени */
     --radius: 6px;
     --border-subtle: 1px solid var(--c-surface);
     --border-main: 1px solid var(--c-ink);
     --border-bold: 2px solid var(--c-ink);
-    --shadow: 0 4px 12px rgba(34, 34, 34, 0.12);
+    --shadow: 0 4px 12px rgba(51, 51, 51, 0.12);
 }
+
 /* =========================================================
    2. БАЗОВЫЕ ЭЛЕМЕНТЫ И ТИПОГРАФИКА
    ========================================================= */
 * {
     box-sizing: border-box;
 }
+
 html, body {
     margin: 0;
     padding: 0;
@@ -49,12 +57,15 @@ html, body {
     font-size: 16px;
     line-height: 1.35;
 }
+
 body.modal-open {
     overflow: hidden;
 }
+
 /* Готический шрифт — только для заголовков */
 h1, h2, h3,
 #char-name,
+.hireling-name-input,
 .category-head,
 .mobile-col-title,
 .catalog-category {
@@ -64,14 +75,17 @@ h1, h2, h3,
     color: var(--c-ink);
     margin: 0;
 }
-h1, h2,#char-name{
+
+h1, h2, #char-name {
     font-size: var(--fs-xl);
     line-height: 1.1;
 }
-h3, .category-head, .mobile-col-title, .catalog-category {
+
+h3, .hireling-name-input, .category-head, .mobile-col-title, .catalog-category {
     font-size: var(--fs-lg);
     line-height: 1.2;
 }
+
 /* Подписи полей (основной шрифт) */
 label {
     display: block;
@@ -79,22 +93,24 @@ label {
     font-size: var(--fs-md);
     font-weight: bold;
     color: var(--c-ink);
-    margin-top: 14px;
     margin-bottom: 6px;
 }
+
 .details-group > label:first-child,
 .extra-inventory-group > label:first-child,
 .bottom-col > label:first-child,
 .form-group > label:first-child {
     margin-top: 0;
 }
+
 .hidden {
     display: none !important;
 }
+
 /* =========================================================
    3. СЕТКА ЛИСТА И ГЛАВНОГО МЕНЮ
    ========================================================= */
-#app-container{
+#app-container {
     max-width: 1000px;
     margin: 24px auto;
     padding: 24px;
@@ -106,32 +122,85 @@ label {
     grid-template-columns: 1fr 1fr;
     gap: 28px;
 }
+
 .bottom-col {
     grid-column: 1 / -1;
     border-top: var(--border-bold);
     padding-top: 16px;
 }
+
 /* Главная страница (index.html) */
 #app-container.menu-container {
     max-width: 600px;
     display: block;
     margin: 40px auto;
 }
+
 .menu-title {
     text-align: center;
     margin-bottom: 24px;
 }
+
 .menu-actions-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 28px;
 }
+
 .menu-subtitle {
     border-bottom: var(--border-bold);
     padding-bottom: 6px;
     margin-bottom: 14px;
 }
+
+.empty-list-msg {
+    font-size: var(--fs-md);
+    font-style: italic;
+    opacity: 0.7;
+    margin: 0;
+}
+
+/* Карточка персонажа в главном меню */
+.char-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-bottom: var(--border-subtle);
+    transition: background-color 0.15s ease;
+}
+
+.char-card:hover {
+    background-color: var(--c-surface);
+}
+
+.char-card-info {
+    cursor: pointer;
+    flex-grow: 1;
+    padding: 4px 0;
+}
+
+.char-card-name {
+    font-size: var(--fs-md);
+    font-weight: bold;
+}
+
+.char-card-level {
+    font-size: var(--fs-sm);
+    opacity: 0.75;
+    margin-left: 10px;
+}
+
+.char-card-delete {
+    width: auto;
+    padding: 6px 12px;
+    margin: 0;
+    font-size: var(--fs-sm);
+    flex-shrink: 0;
+}
+
 /* =========================================================
    4. ПОЛЯ ВВОДА И ВЫПАДАЮЩИЕ СПИСКИ
    ========================================================= */
@@ -141,16 +210,19 @@ input, textarea, select {
     color: var(--c-ink);
     background-color: var(--c-bg);
     border: var(--border-main);
-	border-radius: var(--radius);
+    border-radius: var(--radius);
     padding: 6px 10px;
     outline: none;
     transition: box-shadow 0.15s ease;
 }
+
 input:focus, textarea:focus, select:focus {
     box-shadow: var(--shadow);
 }
-/* Поле имени мыши в шапке */
-#char-name{
+
+/* Поле имени мыши и подёнщика в шапке */
+#char-name,
+.hireling-name-input {
     border: none;
     border-radius: 0;
     padding: 0;
@@ -159,34 +231,43 @@ input:focus, textarea:focus, select:focus {
     flex: 1;
     min-width: 0;
 }
-#char-name:focus {
+
+#char-name:focus,
+.hireling-name-input:focus {
     box-shadow: none;
 }
-#char-name::placeholder {
+
+#char-name::placeholder,
+.hireling-name-input::placeholder {
     color: var(--c-ink);
     opacity: 0.45;
 }
+
 .input-line {
     width: 100%;
     margin-bottom: 12px;
 }
+
 .input-short {
     width: 60px;
     text-align: center;
     padding: 4px 6px;
 }
+
 .input-pips {
     width: 90px;
     text-align: center;
     padding: 4px 6px;
     margin-bottom: 0;
 }
+
 .input-area {
     width: 100%;
     resize: vertical;
     min-height: 76px;
     margin-bottom: 12px;
 }
+
 /* Выпадающие списки */
 .native-select-wrapper {
     position: relative;
@@ -194,16 +275,19 @@ input:focus, textarea:focus, select:focus {
     height: 38px;
     margin-bottom: 12px;
 }
+
 .scrollable-native-select {
     width: 100%;
     cursor: pointer;
 }
+
 .scrollable-native-select:focus {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 100;
 }
+
 /* =========================================================
    5. КНОПКИ (ЕДИНЫЙ СТИЛЬ)
    ========================================================= */
@@ -211,6 +295,7 @@ button,
 .btn-primary,
 .btn-action,
 .btn-add,
+.btn-menu,
 .menu-upload-label {
     font-family: var(--f-body);
     font-size: var(--fs-md);
@@ -229,22 +314,33 @@ button,
     text-align: center;
     transition: opacity 0.15s ease, box-shadow 0.15s ease;
 }
+
 button:hover,
 .btn-primary:hover,
 .btn-action:hover,
 .btn-add:hover,
+.btn-menu:hover,
 .menu-upload-label:hover {
     opacity: 0.88;
     box-shadow: var(--shadow);
 }
+
 .btn-primary,
 .btn-action {
-    width: 100%;
     margin-bottom: 8px;
 }
-.menu-actions-grid .btn-primary {
-    margin-bottom: 0;
+
+.menu-actions-grid .btn-primary,
+.menu-actions-grid label.btn-primary {
+    margin: 0;
+    padding: 12px 16px;
+    font-family: var(--f-body);
+    font-size: var(--fs-md);
+    line-height: 1.2;
+    color: var(--c-bg);
+    min-height: 46px;
 }
+
 .btn-add {
     width: 36px;
     height: 36px;
@@ -253,10 +349,22 @@ button:hover,
     line-height: 1;
     flex-shrink: 0;
 }
-.btn-action.delete {
+
+.btn-menu {
+    width: auto;
+    height: 36px;
+    padding: 0 14px;
+    font-size: var(--fs-md);
+    flex-shrink: 0;
+}
+
+.btn-action.delete,
+.btn-remove-hireling {
     background-color: var(--c-danger);
     border-color: var(--c-danger);
+    color: var(--c-bg);
 }
+
 /* =========================================================
    6. ШАПКА КОЛОНОК И ХАРАКТЕРИСТИКИ
    ========================================================= */
@@ -269,6 +377,7 @@ button:hover,
     padding-bottom: 8px;
     margin-bottom: 14px;
 }
+
 .level-xp {
     display: flex;
     flex-wrap: wrap;
@@ -277,6 +386,7 @@ button:hover,
     gap: 10px;
     margin-bottom: 14px;
 }
+
 .level-xp label,
 .pips-group label {
     display: inline-flex;
@@ -284,9 +394,11 @@ button:hover,
     gap: 8px;
     margin: 0;
 }
+
 .pips-group {
     margin: 14px 0;
 }
+
 /* Сетка характеристик (4 в ряд на ПК) */
 .stats-grid {
     display: grid;
@@ -294,6 +406,7 @@ button:hover,
     gap: 10px;
     margin: 16px 0;
 }
+
 .stat-box {
     background-color: var(--c-surface);
     border: var(--border-main);
@@ -301,10 +414,12 @@ button:hover,
     padding: 10px 6px;
     text-align: center;
 }
+
 .stat-box label {
     margin: 0 0 6px 0;
     font-size: var(--fs-md);
 }
+
 .stat-inputs {
     display: flex;
     align-items: center;
@@ -312,12 +427,14 @@ button:hover,
     gap: 4px;
     font-weight: bold;
 }
+
 .input-stat {
     width: 42px;
     padding: 4px;
     text-align: center;
     font-weight: bold;
 }
+
 /* =========================================================
    7. СНАРЯЖЕНИЕ И КАРТОЧКИ ПРЕДМЕТОВ
    ========================================================= */
@@ -329,14 +446,17 @@ button:hover,
     padding-bottom: 4px;
     margin: 16px 0 8px 0;
 }
+
 .slot-count {
     font-family: var(--f-body);
     font-size: var(--fs-sm);
     font-weight: bold;
 }
+
 .inventory-list {
-	min-height: 42px;
+    min-height: 42px;
 }
+
 .inventory-item {
     background-color: var(--c-bg);
     border: var(--border-main);
@@ -346,30 +466,36 @@ button:hover,
     cursor: pointer;
     transition: box-shadow 0.15s ease, background-color 0.15s ease;
 }
+
 .inventory-item:hover {
     background-color: var(--c-surface);
     box-shadow: var(--shadow);
 }
+
 .item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 8px;
 }
+
 .item-name {
     font-size: var(--fs-md);
     font-weight: bold;
 }
+
 .item-detail {
     font-size: var(--fs-sm);
     margin-top: 2px;
 }
+
 /* Точки прочности */
 .uses-container {
     display: flex;
     gap: 6px;
     flex-shrink: 0;
 }
+
 .use-circle {
     width: 16px;
     height: 16px;
@@ -378,9 +504,11 @@ button:hover,
     background-color: var(--c-bg);
     cursor: pointer;
 }
+
 .use-circle.filled {
     background-color: var(--c-ink);
 }
+
 /* Пустой слот */
 .empty-slot {
     height: 42px;
@@ -388,6 +516,7 @@ button:hover,
     border-radius: var(--radius);
     margin-bottom: 8px;
 }
+
 /* Плашка перегруза */
 .overload-text {
     background-color: var(--c-danger);
@@ -398,19 +527,21 @@ button:hover,
     border-radius: var(--radius);
     margin-bottom: 12px;
 }
+
 /* =========================================================
    8. МОДАЛЬНЫЕ ОКНА (ПОПАПЫ) И КАТАЛОГ
    ========================================================= */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(34, 34, 34, 0.65);
+    background-color: rgba(51, 51, 51, 0.65);
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 16px;
     z-index: 1000;
 }
+
 .modal-content {
     background-color: var(--c-bg);
     border: var(--border-bold);
@@ -423,6 +554,7 @@ button:hover,
     display: flex;
     flex-direction: column;
 }
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -432,6 +564,7 @@ button:hover,
     padding-bottom: 8px;
     margin-bottom: 14px;
 }
+
 .btn-close {
     background: transparent;
     color: var(--c-ink);
@@ -441,10 +574,12 @@ button:hover,
     padding: 0 6px;
     width: auto;
 }
+
 .btn-close:hover {
     box-shadow: none;
     opacity: 0.6;
 }
+
 .modal-body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -452,6 +587,7 @@ button:hover,
     flex: 1;
     min-height: 0;
 }
+
 /* Категории и элементы каталога */
 .catalog-category {
     display: flex;
@@ -465,14 +601,17 @@ button:hover,
     cursor: pointer;
     user-select: none;
 }
+
 .catalog-category::after {
     content: "▸";
     font-family: var(--f-body);
     font-size: var(--fs-md);
 }
+
 .catalog-category.open::after {
     content: "▾";
 }
+
 .catalog-item {
     display: flex;
     justify-content: space-between;
@@ -482,45 +621,270 @@ button:hover,
     border-bottom: var(--border-subtle);
     cursor: pointer;
 }
+
 .catalog-item:hover {
     background-color: var(--c-surface);
 }
+
 .catalog-item-name {
     font-size: var(--fs-md);
 }
+
 .catalog-item-size {
     font-size: var(--fs-sm);
 }
+
 /* Блок +/- использования внутри попапа */
-.use-control-block,
-#action-buttons> div:first-child {
+.use-control-block {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    background-color: var(--c-surface) !important;
+    background-color: var(--c-surface);
     border: var(--border-main);
-    border-radius: var(--radius) !important;
-    padding: 6px !important;
-    margin-bottom: 10px !important;
+    border-radius: var(--radius);
+    padding: 6px;
+    margin-bottom: 10px;
 }
-.use-control-block span,
-#action-buttons> div:first-child span {
-    color: var(--c-ink) !important;
-    font-size: var(--fs-md) !important;
+
+.use-control-text {
+    color: var(--c-ink);
+    font-size: var(--fs-md);
     font-weight: bold;
+    text-transform: uppercase;
     text-align: center;
 }
+
+.use-control-btn {
+    width: 40px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
 /* =========================================================
-9. МОБИЛЬНАЯ НАВИГАЦИЯ И АДАПТАЦИЯ (<= 1000px)
+   9. ПОДЁНЩИКИ (HIRELINGS)
+   ========================================================= */
+.hirelings-col {
+    grid-column: 1 / -1;
+    border-top: var(--border-bold);
+    padding-top: 16px;
+}
+
+.hireling-card {
+    border: var(--border-main);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: var(--c-bg);
+}
+
+.hireling-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.gen-hireling-item {
+    margin-bottom: 12px;
+}
+
+.gen-hireling-item:last-child {
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   10. ГЕНЕРАТОР ПЕРСОНАЖА
+   ========================================================= */
+.modal-content.modal-generator {
+    max-width: 540px;
+}
+
+.gen-block {
+    border-bottom: var(--border-main);
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+}
+
+.gen-block:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.gen-block > label:first-child {
+    margin-top: 0;
+}
+
+/* Характеристики: 3 колонки (СИЛ, ЛОВ, ВОЛ) */
+.gen-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 8px 0 12px 0;
+}
+
+.gen-rolls {
+    font-size: var(--fs-sm);
+    opacity: 0.75;
+    margin-bottom: 4px;
+}
+
+.gen-stat-total {
+    font-size: var(--fs-lg);
+    font-weight: bold;
+    background-color: var(--c-bg);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    padding: 4px 0;
+}
+
+/* Кнопки обмена характеристик */
+.gen-swap-title {
+    font-size: var(--fs-sm);
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.gen-swap-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.btn-swap {
+    font-size: var(--fs-sm);
+    padding: 6px 4px;
+}
+
+.btn-swap.active {
+    background-color: var(--c-surface);
+    color: var(--c-ink);
+    border: var(--border-bold);
+}
+
+/* Блок 3: Защита, зёрнышки, происхождение, знак */
+.gen-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gen-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    padding: 4px 0;
+    border-bottom: var(--border-subtle);
+}
+
+.gen-info-item:last-child {
+    border-bottom: none;
+}
+
+.gen-info-label {
+    font-weight: bold;
+}
+
+.gen-info-value {
+    text-align: right;
+}
+
+/* Блок 5: Снаряжение и выбор оружия */
+.gen-equip-list {
+    margin: 6px 0 12px 18px;
+    padding: 0;
+    list-style: disc;
+}
+
+.gen-equip-list li {
+    margin-bottom: 4px;
+    font-size: var(--fs-md);
+}
+
+.gen-bonus-box {
+    background-color: var(--c-surface);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+.gen-bonus-title {
+    font-size: var(--fs-sm);
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.gen-selectable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.gen-selectable-row {
+    font-size: var(--fs-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: var(--c-bg);
+    border: var(--border-main);
+    border-radius: var(--radius);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+}
+
+.gen-selectable-row:hover {
+    background-color: var(--c-surface);
+}
+
+.gen-selectable-row.selected {
+    background-color: var(--c-ink);
+    color: var(--c-bg);
+    font-weight: bold;
+}
+
+/* =========================================================
+   11. ПОДВАЛ (ФУТЕР)
+   ========================================================= */
+.site-footer {
+    width: 100%;
+    background-color: var(--c-surface);
+    color: var(--c-ink);
+    text-align: center;
+    padding: 12px 16px;
+    font-size: var(--fs-xs);
+    border-top: var(--border-main);
+    margin-top: 24px;
+}
+
+.site-footer a {
+    color: var(--c-ink);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.site-footer a:hover {
+    color: var(--c-danger);
+    text-decoration: none;
+}
+
+/* =========================================================
+   12. МОБИЛЬНАЯ НАВИГАЦИЯ И АДАПТАЦИЯ (<= 768px)
    ========================================================= */
 .mobile-col-nav {
     display: none;
 }
+
 @media (max-width: 768px) {
     html, body {
         overflow-x: hidden;
     }
+
     #app-container,
     #app-container.menu-container {
         width: 100%;
@@ -535,10 +899,12 @@ button:hover,
         gap: 16px;
         overflow-x: hidden;
     }
+
     /* Жестко ограничиваем ширину колонок и полей по ширине экрана */
     .left-col,
     .right-col,
     .bottom-col,
+    .hirelings-col,
     .header-group,
     .details-group,
     .native-select-wrapper,
@@ -549,27 +915,31 @@ button:hover,
         width: 100%;
         max-width: 100%;
     }
+
     /* Таблица характеристик 2x2 на мобильных */
     .stats-grid,
-#app-container.stats-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 10px !important;
+    #app-container .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
         width: 100%;
     }
+
     .stat-box,
-#app-container.stat-box {
+    #app-container .stat-box {
         width: 100%;
         min-width: 0;
     }
+
     /* Главная страница: сетка кнопок 4x1 */
-    .menu-actions-grid,
-#app-container> div[style="grid"] {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
+    .menu-actions-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
-    /* Панель переключения колонок: < Основное / Снаряжение > */
-    .mobile-col-nav {
+
+    /* Панель переключения колонок: < Основное / Снаряжение / Подёнщики > */
+    .mobile-col-nav,
+    .hirelings-col .mobile-col-nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -581,6 +951,7 @@ button:hover,
         margin-bottom: 14px;
         user-select: none;
     }
+
     .btn-col-switch {
         width: 38px;
         height: 34px;
@@ -588,22 +959,44 @@ button:hover,
         font-size: var(--fs-md);
         flex-shrink: 0;
     }
-    /* Переключение левой и правой колонок (Заметки всегда остаются внизу) */
-#app-container.mobile-show-left .right-col {
+
+    .hirelings-col {
+        margin-top: 0;
+        border-top: none;
+        padding-top: 0;
+    }
+
+    /* Переключение 3 колонок (Заметки всегда остаются внизу) */
+    #app-container.mobile-show-left .right-col,
+    #app-container.mobile-show-left .hirelings-col {
         display: none;
     }
-#app-container.mobile-show-right .left-col {
+
+    #app-container.mobile-show-right .left-col,
+    #app-container.mobile-show-right .hirelings-col {
         display: none;
     }
+
+    #app-container.mobile-show-hirelings .left-col,
+    #app-container.mobile-show-hirelings .right-col {
+        display: none;
+    }
+
+    .bottom-col {
+        order: 99;
+    }
+
     /* Увеличенные точки прочности для сенсорного экрана */
     .use-circle {
         width: 18px;
         height: 18px;
     }
+
     /* Попапы на всю доступную ширину мобильного экрана */
     .modal-overlay {
         padding: 10px;
     }
+
     .modal-content {
         max-width: 100%;
         padding: 14px;

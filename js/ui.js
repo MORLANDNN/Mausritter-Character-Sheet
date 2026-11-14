@@ -1,18 +1,19 @@
 // js/ui.js — Связь данных с HTML-интерфейсом
-document.addEventListener("DOMContentLoaded", () => {
+	document.addEventListener("DOMContentLoaded", () => {
     CharacterState.subscribe(renderUI);
     const btnAddItem = document.getElementById('btn-add-item');
     if (btnAddItem) {
-        btnAddItem.addEventListener('click', () => UI_Modals.openCatalog());
+        btnAddItem.addEventListener('click', () => {
+            UI_Modals.currentTarget = "pack";
+            UI_Modals.openCatalog();
+        });
     }
     // 1. ПРИВЯЗКА ПРОСТЫХ ТЕКСТОВЫХ И ЧИСЛОВЫХ ПОЛЕЙ
     const fieldMap = {
         'name': 'name',
         'background': 'background',
         'birthsign': 'birthSign',
-        'coat': 'coat',
         'appearance': 'appearance',
-        'ignored-cond': 'ignoredConditions',
         'bank': 'bankItems',
         'notes': 'notes',
         'level': 'level',
@@ -70,57 +71,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 	// МОБИЛЬНАЯ НАВИГАЦИЯ И СВАЙПЫ
 	function initMobileColumns() {
-    const appContainer = document.getElementById('app-container');
-    if (!appContainer) return;
-    let currentCol = 'left'; // 'left' (Основное) или 'right' (Снаряжение)
-    function setMobileCol(col) {
-        currentCol = col;
-        appContainer.classList.remove('mobile-show-left', 'mobile-show-right');
-        appContainer.classList.add(col === 'left' ? 'mobile-show-left' : 'mobile-show-right');
-    }
-    function toggleMobileCol() {
-        setMobileCol(currentCol === 'left' ? 'right' : 'left');
-    }
-    // По умолчанию открыта левая колонка (Основное)
-    setMobileCol('left');
-    // Кнопки "<" и ">"
-    document.querySelectorAll('.btn-col-switch').forEach(btn => {
-        btn.addEventListener('click', () => {
-            toggleMobileCol();
-        });
-    });
-    // Обработка свайпов
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isSwipingFromInput = false;
-    appContainer.addEventListener('touchstart', (e) => {
-        if (e.touches.length !== 1) return;
-        const tag = e.target.tagName.toLowerCase();
-        // Не перехватываем свайп, если пользователь выделяет текст или крутит поле ввода
-        isSwipingFromInput = (tag === 'input' || tag === 'textarea' || tag === 'select');
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    appContainer.addEventListener('touchend', (e) => {
-        if (window.innerWidth > 768 || isSwipingFromInput) return;
-        // Если открыт попап — свайп колонок не срабатывает
-        const overlay = document.getElementById('modal-overlay');
-        if (overlay && !overlay.classList.contains('hidden')) return;
-        if (e.changedTouches.length !== 1) return;
-        const deltaX = e.changedTouches[0].clientX - touchStartX;
-        const deltaY = e.changedTouches[0].clientY - touchStartY;
-        // Свайп засчитывается, если смещение по горизонтали > 55px и явно превышает вертикальный скролл
-        if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-            if (deltaX < 0 && currentCol === 'left') {
-                // Свайп влево -> переход к "Снаряжению"
-                setMobileCol('right');
-            } else if (deltaX > 0 && currentCol === 'right') {
-                // Свайп вправо -> возврат к "Основному"
-                setMobileCol('left');
-            }
+        const appContainer = document.getElementById('app-container');
+        if (!appContainer) return;
+        const cols = ['left', 'right', 'hirelings'];
+        let currentIndex = 0;
+
+        function setMobileCol(index) {
+            currentIndex = (index + cols.length) % cols.length;
+            appContainer.classList.remove('mobile-show-left', 'mobile-show-right', 'mobile-show-hirelings');
+            appContainer.classList.add(`mobile-show-${cols[currentIndex]}`);
         }
-    }, { passive: true });
-}
+
+        setMobileCol(0); // По умолчанию "Основное"
+
+        document.querySelectorAll('.btn-col-switch').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const dir = btn.dataset.dir === 'prev' ? -1 : 1;
+                setMobileCol(currentIndex + dir);
+            });
+        });
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isSwipingFromInput = false;
+
+        appContainer.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            const tag = e.target.tagName.toLowerCase();
+            isSwipingFromInput = (tag === 'input' || tag === 'textarea' || tag === 'select');
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        appContainer.addEventListener('touchend', (e) => {
+            if (window.innerWidth > 768 || isSwipingFromInput) return;
+            const overlay = document.getElementById('modal-overlay');
+            if (overlay && !overlay.classList.contains('hidden')) return;
+            if (e.changedTouches.length !== 1) return;
+
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+            if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+                if (deltaX < 0) {
+                    // Свайп влево -> следующая колонка по кругу (Подёнщики -> Основное)
+                    setMobileCol(currentIndex + 1);
+                } else if (deltaX > 0) {
+                    // Свайп вправо -> предыдущая колонка по кругу (Основное -> Подёнщики)
+                    setMobileCol(currentIndex - 1);
+                }
+            }
+        }, { passive: true });
+    }
 
 
     // 5. ЗАГРУЗКА СОХРАНЕНИЯ ИЗ LOCALSTORAGE ПРИ СТАРТЕ
@@ -180,6 +182,8 @@ function renderUI() {
     renderList('paws-list', InventoryLogic.getPawsRows());
     renderList('body-list', InventoryLogic.getBodyRows());
     renderList('pack-list', InventoryLogic.getPackRows());
+    renderIgnoredConditions();
+	renderHirelings();
 }
 // Функция сборки конкретного списка (В лапах, Надетое, В мешке)
 function renderList(containerId, items) {
@@ -226,6 +230,7 @@ function renderList(containerId, items) {
 }
 // --- ЛОГИКА МОДАЛЬНЫХ ОКОН (ПОПАПОВ) ---
 	const UI_Modals = {
+		currentTarget: "pack",
 		overlay: () => document.getElementById('modal-overlay'),
 		showOverlay() {
 			this.overlay().classList.remove('hidden');
@@ -287,6 +292,8 @@ function renderList(containerId, items) {
         document.getElementById('custom-uses').value = '0';
         document.getElementById('custom-slots').value = '1';
         document.getElementById('custom-weapon-block').classList.add('hidden');
+        document.getElementById('custom-armor-block').classList.add('hidden');
+        document.getElementById('custom-armor-size').value = 'light';
         document.getElementById('custom-slots-block').classList.remove('hidden');
         this.showOverlay();
         document.getElementById('modal-create').classList.remove('hidden');
@@ -295,7 +302,7 @@ function renderList(containerId, items) {
         const name = document.getElementById('custom-name').value || "Неизвестный предмет";
         const type = document.getElementById('custom-type').value;
         const detail = document.getElementById('custom-detail').value;
-        const uses = parseInt(document.getElementById('custom-uses').value, 10) || 0;
+        const uses = Math.min(6, Math.max(0, parseInt(document.getElementById('custom-uses').value, 10) || 0));
         let packSize = 1, pawsSize = 0, bodySize = 0;
         let versatile = null;
         if (type === 'weapon') {
@@ -314,13 +321,32 @@ function renderList(containerId, items) {
                 packSize = 2;
                 pawsSize = 2;
             }
+        } else if (type === 'armor') {
+            const aSize = document.getElementById('custom-armor-size').value;
+            packSize = 2;
+            if (aSize === 'light') {
+                pawsSize = 1;
+                bodySize = 1;
+            } else {
+                pawsSize = 0;
+                bodySize = 2;
+            }
         } else {
             const slots = parseInt(document.getElementById('custom-slots').value, 10) || 1;
             packSize = slots;
-            if (type === 'armor') bodySize = slots;
-            else if (type !== 'condition') pawsSize = slots;
+            if (type !== 'condition') pawsSize = slots;
         }
-        const template = { name, type, detail, maxUses: uses, packSize, pawsSize, bodySize, versatile };
+        const template = {
+            id: "custom_" + Date.now(),
+            name,
+            type,
+            detail,
+            maxUses: uses,
+            packSize,
+            pawsSize,
+            bodySize,
+            versatile
+        };
         CharacterState.data.customItems.push(template);
         this.openLocationChoice(template);
     },
@@ -381,23 +407,36 @@ function renderList(containerId, items) {
             btn.className = `btn-action ${action.type === 'delete' ? 'delete' : ''}`;
             btn.textContent = action.label;
             btn.onclick = () => {
-                if (action.type === 'delete') {
+                const aType = action.type || '';
+                if (aType === 'delete') {
                     InventoryLogic.removeItem(instanceId);
                     this.closeAll();
-                } else if (action.type === 'equip' || action.type === 'equip_1' || action.type === 'equip_2') {
+                } else if (aType === 'equip' || aType === 'equip_1' || aType === 'equip_2') {
                     const wasEquipped = item.location === "equipped";
-                    const mode = action.type === 'equip' ? null : action.type;
+                    const mode = aType === 'equip' ? null : aType;
                     const res = InventoryLogic.moveItem(instanceId, "equipped", mode);
-                    if (!res.success) {
-                        alert(res.error);
-                    } else if (wasEquipped) {
-                        // Если меняли хват уже экипированного оружия — обновляем кнопку в окне
-                        this.openActions(instanceId);
-                    } else {
-                        this.closeAll();
-                    }
-                } else if (action.type === 'pack') {
+                    if (!res.success) alert(res.error);
+                    else if (wasEquipped) this.openActions(instanceId);
+                    else this.closeAll();
+                } else if (aType === 'pack') {
                     const res = InventoryLogic.moveItem(instanceId, "pack");
+                    if (!res.success) alert(res.error);
+                    else this.closeAll();
+                } else if (aType === 'h_equip' || aType === 'h_equip_1' || aType === 'h_equip_2') {
+                    const targetLoc = `hireling_${action.hId}_equipped`;
+                    const wasEquipped = item.location === targetLoc;
+                    const mode = aType === 'h_equip' ? null : aType.replace('h_', '');
+                    const res = InventoryLogic.moveItem(instanceId, targetLoc, mode);
+                    if (!res.success) alert(res.error);
+                    else if (wasEquipped) this.openActions(instanceId);
+                    else this.closeAll();
+                } else if (aType === 'h_pack') {
+                    const res = InventoryLogic.moveItem(instanceId, `hireling_${action.hId}_pack`);
+                    if (!res.success) alert(res.error);
+                    else this.closeAll();
+                } else if (aType.startsWith('transfer_')) {
+                    const targetLoc = aType.replace('transfer_', '');
+                    const res = InventoryLogic.moveItem(instanceId, targetLoc);
                     if (!res.success) alert(res.error);
                     else this.closeAll();
                 }
@@ -413,49 +452,60 @@ function renderList(containerId, items) {
             ? GameData.itemDatabase[itemIdOrObject]
             : itemIdOrObject;
         if (!template) return;
+
+        const targetOwner = this.currentTarget || "main";
+        const isHireling = targetOwner.startsWith("hireling_");
+        const hId = isHireling ? targetOwner.replace("hireling_", "") : null;
+        const packLoc = isHireling ? `hireling_${hId}_pack` : "pack";
+        const equipLoc = isHireling ? `hireling_${hId}_equipped` : "equipped";
+
         if (template.type === 'condition') {
-            InventoryLogic.addItem(itemIdOrObject, "pack");
+            InventoryLogic.addItem(itemIdOrObject, packLoc);
             this.closeAll();
             return;
         }
+
         this.closeAll();
         document.getElementById('location-item-name').textContent = template.name;
         const container = document.getElementById('location-buttons');
         container.innerHTML = '';
+
         const btnPack = document.createElement('button');
         btnPack.className = 'btn-action';
         btnPack.textContent = 'Положить в мешок';
         btnPack.onclick = () => {
-            InventoryLogic.addItem(itemIdOrObject, "pack");
+            InventoryLogic.addItem(itemIdOrObject, packLoc);
             this.closeAll();
         };
         container.appendChild(btnPack);
-        if (template.bodySize > 0) {
+
+        if (!isHireling && template.bodySize > 0) {
             const btnBody = document.createElement('button');
             btnBody.className = 'btn-action';
             btnBody.textContent = 'Надеть';
             btnBody.onclick = () => {
-				const res = InventoryLogic.addItem(itemIdOrObject, "equipped");
+                const res = InventoryLogic.addItem(itemIdOrObject, equipLoc);
                 if (!res.success) alert(res.error);
                 else this.closeAll();
             };
             container.appendChild(btnBody);
-        } else if (template.pawsSize > 0) {
+        } else if (template.pawsSize > 0 || (isHireling && template.bodySize > 0)) {
             if (template.versatile) {
                 const btn1 = document.createElement('button');
                 btn1.className = 'btn-action';
                 btn1.textContent = 'Взять в 1 лапу (d6)';
                 btn1.onclick = () => {
-                    const res = InventoryLogic.addItem(itemIdOrObject, "equipped", "equip_1");
+                    const res = InventoryLogic.addItem(itemIdOrObject, equipLoc, "equip_1");
                     if (!res.success) alert(res.error);
                     else this.closeAll();
                 };
                 container.appendChild(btn1);
+
                 const btn2 = document.createElement('button');
                 btn2.className = 'btn-action';
                 btn2.textContent = 'Взять в 2 лапы (d8)';
                 btn2.onclick = () => {
-                    const res = InventoryLogic.addItem(itemIdOrObject, "equipped", "equip_2");
+                    const res = InventoryLogic.addItem(itemIdOrObject, equipLoc, "equip_2");
                     if (!res.success) alert(res.error);
                     else this.closeAll();
                 };
@@ -465,24 +515,27 @@ function renderList(containerId, items) {
                 btnEquip.className = 'btn-action';
                 btnEquip.textContent = 'Взять в лапы';
                 btnEquip.onclick = () => {
-                    const res = InventoryLogic.addItem(itemIdOrObject, "equipped");
+                    const res = InventoryLogic.addItem(itemIdOrObject, equipLoc);
                     if (!res.success) alert(res.error);
                     else this.closeAll();
                 };
                 container.appendChild(btnEquip);
             }
         }
+
         this.showOverlay();
         document.getElementById('modal-location').classList.remove('hidden');
     }
 };
-// Переключатель в окне "Создать свое" (Оружие <-> Количество ячеек)
+// Переключатель в окне "Создать свое" (Оружие / Броня <-> Количество ячеек)
 const customTypeSelect = document.getElementById('custom-type');
 if (customTypeSelect) {
     customTypeSelect.addEventListener('change', (e) => {
         const isWeapon = (e.target.value === 'weapon');
+        const isArmor = (e.target.value === 'armor');
         document.getElementById('custom-weapon-block').classList.toggle('hidden', !isWeapon);
-        document.getElementById('custom-slots-block').classList.toggle('hidden', isWeapon);
+        document.getElementById('custom-armor-block').classList.toggle('hidden', !isArmor);
+        document.getElementById('custom-slots-block').classList.toggle('hidden', isWeapon || isArmor);
     });
 }
 // Закрытие по клику на темный фон
@@ -491,6 +544,237 @@ if (modalOverlay) {
     modalOverlay.addEventListener('click', (e) => {
         if (e.target === modalOverlay) UI_Modals.closeAll();
     });
+}
+	const btnAddHireling = document.getElementById('btn-add-hireling');
+	if (btnAddHireling) {
+		btnAddHireling.addEventListener('click', () => {
+			const res = InventoryLogic.addHireling();
+			if (!res.success) alert(res.error);
+		});
+	}
+    // Сброс цели на основной инвентарь при клике на главный '+'
+    const btnAddItem = document.getElementById('btn-add-item');
+    if (btnAddItem) {
+        btnAddItem.addEventListener('click', () => {
+            UI_Modals.currentTarget = "pack"; 
+            UI_Modals.openCatalog();
+        });
+    }
+
+// --- ОТРИСОВКА ПОДЁНЩИКОВ ---
+function renderHirelings() {
+    const container = document.getElementById('hirelings-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!Array.isArray(CharacterState.data.hirelings)) {
+        CharacterState.data.hirelings = [];
+    }
+
+    const countEl = document.getElementById('hirelings-count');
+    if (countEl) {
+        countEl.textContent = `${CharacterState.data.hirelings.length}/2`;
+    }
+
+    const birthsignsList = (GameData.generatorTables && GameData.generatorTables.birthsigns)
+        ? GameData.generatorTables.birthsigns
+        : [
+            "Звезда - храбрый/безрассудный",
+            "Колесо - Трудолюбивый/приземлённый",
+            "Жёлудь - Любознательный/упрямый",
+            "Буря - Благородный/гневливый",
+            "Луна - Мудрый/таинственный",
+            "Мать - Заботливый/тревожный"
+        ];
+
+    CharacterState.data.hirelings.forEach(h => {
+        const card = document.createElement('div');
+        card.className = 'hireling-card';
+
+        const usedPaws = InventoryLogic.getHirelingUsedPaws(h.id);
+        const usedPack = InventoryLogic.getHirelingUsedPack(h.id);
+        card.innerHTML = `
+            <div class="inventory-header">
+                <input type="text" class="text-large hireling-name-input" value="${h.name || ''}" placeholder="Имя подёнщика" data-id="${h.id}">
+                <div class="hireling-header-actions">
+                    <button type="button" class="btn-add btn-roll-hireling" data-id="${h.id}" title="Сгенерировать характеристики (2d6) и знак рождения">🎲</button>
+                    <button type="button" class="btn-add btn-remove-hireling" data-id="${h.id}" title="Удалить подёнщика">×</button>
+                </div>
+            </div>
+
+            <!-- Характеристики точь-в-точь как у персонажа -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <label>ЗАЩ</label>
+                    <div class="stat-inputs">
+                        <input type="number" class="input-stat h-hp-cur" value="${h.stats.HP.current}" data-id="${h.id}"> /
+                        <input type="number" class="input-stat h-hp-max" value="${h.stats.HP.max}" data-id="${h.id}">
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <label>СИЛ</label>
+                    <div class="stat-inputs">
+                        <input type="number" class="input-stat h-str-cur" value="${h.stats.STR.current}" data-id="${h.id}"> /
+                        <input type="number" class="input-stat h-str-max" value="${h.stats.STR.max}" data-id="${h.id}">
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <label>ЛОВ</label>
+                    <div class="stat-inputs">
+                        <input type="number" class="input-stat h-dex-cur" value="${h.stats.DEX.current}" data-id="${h.id}"> /
+                        <input type="number" class="input-stat h-dex-max" value="${h.stats.DEX.max}" data-id="${h.id}">
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <label>ВОЛ</label>
+                    <div class="stat-inputs">
+                        <input type="number" class="input-stat h-wil-cur" value="${h.stats.WIL.current}" data-id="${h.id}"> /
+                        <input type="number" class="input-stat h-wil-max" value="${h.stats.WIL.max}" data-id="${h.id}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-group">
+                <label>Знак рождения:</label>
+                <div class="native-select-wrapper">
+                    <select class="scrollable-native-select h-sign" data-id="${h.id}">
+                        <option value="">— Выбрать —</option>
+                        ${birthsignsList.map(sign => `<option value="${sign}" ${h.birthSign === sign ? 'selected' : ''}>${sign}</option>`).join('')}
+                    </select>
+                </div>
+                <label>Внешность</label>
+                <textarea rows="2" class="input-area h-app" data-id="${h.id}">${h.appearance || ''}</textarea>
+            </div>
+
+            <div class="inventory-section">
+                <div class="inventory-header">
+                    <h2>Снаряжение</h2>
+                    <button type="button" class="btn-add btn-h-add" data-id="${h.id}">+</button>
+                </div>
+                <div class="inventory-category">
+                    <div class="category-head">В лапах <span class="slot-count">${usedPaws}/2</span></div>
+                    <div id="h-paws-${h.id}" class="inventory-list"></div>
+                </div>
+                <div class="inventory-category">
+                    <div class="category-head">В мешке <span class="slot-count">${usedPack}/4</span></div>
+                    <div id="h-pack-${h.id}" class="inventory-list"></div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+
+        renderList(`h-paws-${h.id}`, InventoryLogic.getHirelingPawsRows(h.id));
+        renderList(`h-pack-${h.id}`, InventoryLogic.getHirelingPackRows(h.id));
+    });
+
+    if (CharacterState.data.hirelings.length === 0) {
+        container.innerHTML = '<div class="empty-slot" id="hirelings-empty-slot"></div>';
+    }
+
+    bindHirelingEvents();
+}
+function bindHirelingEvents() {
+    // Генерация статов (2d6) и знака рождения
+    document.querySelectorAll('.btn-roll-hireling').forEach(btn => {
+        btn.onclick = (e) => {
+            InventoryLogic.rollHirelingStats(e.currentTarget.dataset.id);
+        };
+    });
+
+    // Удаление
+   // Удаление
+    document.querySelectorAll('.btn-remove-hireling').forEach(btn => {
+        btn.onclick = (e) => {
+            if (confirm("Уволить подёнщика? Его вещи перейдут в мешок персонажа.")) {
+                InventoryLogic.removeHireling(e.currentTarget.dataset.id);
+            }
+        };
+    });
+
+    // Кнопка "+"
+    document.querySelectorAll('.btn-h-add').forEach(btn => {
+        btn.onclick = (e) => {
+            UI_Modals.currentTarget = "hireling_" + e.currentTarget.dataset.id;
+            UI_Modals.openCatalog();
+        };
+    });
+
+    // Изменение текстовых полей и характеристик (silent = true, чтобы не терялся фокус после 1 символа)
+    document.querySelectorAll('.hireling-name-input').forEach(inp => {
+        inp.oninput = (e) => CharacterState.setHirelingField(e.target.dataset.id, 'name', e.target.value, null, true);
+    });
+    document.querySelectorAll('.h-sign').forEach(selectEl => {
+        selectEl.addEventListener('focus', function() {
+            if (window.innerWidth > 768) {
+                this.size = 5;
+            }
+        });
+        selectEl.addEventListener('change', function(e) {
+            this.size = 1;
+            this.blur();
+            CharacterState.setHirelingField(e.target.dataset.id, 'birthSign', e.target.value, null, true);
+        });
+        selectEl.addEventListener('blur', function() {
+            this.size = 1;
+        });
+    });
+
+    const statMap = [
+        { cls: 'h-hp-cur',  st: 'HP',  t: 'current' },
+        { cls: 'h-hp-max',  st: 'HP',  t: 'max' },
+        { cls: 'h-str-cur', st: 'STR', t: 'current' },
+        { cls: 'h-str-max', st: 'STR', t: 'max' },
+        { cls: 'h-dex-cur', st: 'DEX', t: 'current' },
+        { cls: 'h-dex-max', st: 'DEX', t: 'max' },
+        { cls: 'h-wil-cur', st: 'WIL', t: 'current' },
+        { cls: 'h-wil-max', st: 'WIL', t: 'max' }
+    ];
+    statMap.forEach(m => {
+        document.querySelectorAll(`.${m.cls}`).forEach(inp => {
+            inp.oninput = (e) => CharacterState.setHirelingField(e.target.dataset.id, m.st, e.target.value, m.t, true);
+        });
+    });
+} // <-- ЗАКРЫВАЮЩАЯ СКОБКА ДЛЯ bindHirelingEvents
+
+// --- ОТРИСОВКА БЛОКА "ИГНОРИРУЕМЫЕ СОСТОЯНИЯ" ---
+function renderIgnoredConditions() {
+    const block = document.getElementById('ignored-cond-block');
+    const list = document.getElementById('ignored-cond-list');
+    if (!block || !list) return;
+
+    const gritCount = Math.max(0, parseInt(CharacterState.data.grit, 10) || 0);
+
+    // Если Выдержка = 0, скрываем весь блок
+    if (gritCount === 0) {
+        block.classList.add('hidden');
+        list.innerHTML = '';
+        return;
+    }
+
+    block.classList.remove('hidden');
+
+    if (!Array.isArray(CharacterState.data.ignoredConditions)) {
+        CharacterState.data.ignoredConditions = [];
+    }
+
+    // Обрезаем или дополняем массив под текущее значение Выдержки
+    if (CharacterState.data.ignoredConditions.length > gritCount) {
+        CharacterState.data.ignoredConditions.length = gritCount;
+    }
+
+    list.innerHTML = '';
+    for (let i = 0; i < gritCount; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'input-line';
+        input.placeholder = ``;
+        input.value = CharacterState.data.ignoredConditions[i] || '';
+        input.addEventListener('input', (e) => {
+            CharacterState.setIgnoredCondition(i, e.target.value);
+        });
+        list.appendChild(input);
+    }
 }
 
 
