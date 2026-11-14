@@ -90,7 +90,11 @@ const InventoryLogic = {
         const needed = itemTemplate.pawsSize || itemTemplate.bodySize || 1;
         return (this.getHirelingUsedPaws(hId, ignoreInstanceId) + needed) <= 2;
     },
-	getHirelingPackRows(hId) {
+    getHirelingPawsRows(hId) {
+        const loc = `hireling_${hId}_equipped`;
+        return CharacterState.data.items.filter(i => i.location === loc);
+    },
+    getHirelingPackRows(hId) {
         const loc = `hireling_${hId}_pack`;
         const legacyLoc = `hireling_${hId}`;
         return CharacterState.data.items.filter(i => i.location === loc || i.location === legacyLoc);
